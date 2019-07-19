@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         获取SS账号
-// @namespace    https://github.com/RichieMay/GetFreeSS/raw/master/GetFreeSS.user.js
+// @namespace    https://github.com/RichieMay/WebTools/raw/master/GetFreeSS.user.js
 // @version      1.6
 // @description  获取SS账号
 // @author       RichieMay

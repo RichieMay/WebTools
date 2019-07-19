@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         启用视频全屏
-// @namespace    https://github.com/RichieMay/FullScreen
+// @namespace    https://github.com/RichieMay/WebTools/raw/master/FullScreen.user.js
 // @version      1.1
 // @description  启用视频全屏
 // @author       RichieMay

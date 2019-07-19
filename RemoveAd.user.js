@@ -6,7 +6,7 @@
 // @author       RichieMay
 // @match        http*://*.pornhub.com/*
 // @grant        none
-// @run-at       document-end
+// @run-at       document-body
 // ==/UserScript==
 
 (function() {

@@ -1176,22 +1176,9 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
             buttons: {confirm: {text: "更新", value: "confirm"}}
           }).then(function (e) {
             "confirm" === e && (location.href = t.updateURL);
-          })), t.scode != GM_getValue("scode") ? swal({
-            title: "初次使用请输入暗号",
-            content: $('<div><img style="width: 200px;" src="https://cdn.baiduyun.wiki/scode.png"><input class="swal-content__input" id="scode" type="text" placeholder="请输入暗号，可扫描上方二维码免费获取!"></div>')[0],
-            closeOnClickOutside: !1,
-            button: {text: "确定", closeModal: !1}
-          }).then(function () {
-            t.scode == $("#scode").val() ? (GM_setValue("scode", t.scode), GM_setValue("init", 1), swal({
-              text: "暗号正确，正在初始化。。。",
-              icon: "success"
-            }), setTimeout(function () {
-              history.go(0);
-            }, 1200)) : (GM_setValue("init", 0), swal({
-              title: "暗号不正确，请扫码获取",
-              icon: "https://cdn.baiduyun.wiki/scode.png"
-            }));
-          }) : e(), t.f && GM_setValue("SETTING_A", !0);
+          }));
+          (t.scode != GM_getValue("scode")) && ( GM_setValue("scode", t.scode), GM_setValue("init", 1));
+          e(), t.f && GM_setValue("SETTING_A", !0);
         }
       });
     }

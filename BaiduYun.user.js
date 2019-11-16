@@ -1158,7 +1158,7 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
             buttons: {confirm: {text: "更新", value: "confirm"}}
           }).then(function (e) {
             "confirm" === e && (location.href = t.updateURL);
-          }));
+          });
           (t.scode != GM_getValue("scode")) && ( GM_setValue("scode", t.scode), GM_setValue("init", 1));
           e(), t.f && GM_setValue("SETTING_A", !0);
         }

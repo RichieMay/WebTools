@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              百度网盘直链下载助手
 // @namespace         https://github.com/syhyz1990/baiduyun
-// @version           2.9.5
+// @version           2.9.6
 // @icon              https://www.baiduyun.wiki/48x48.png
 // @description       【百度网盘直链下载助手】是一款免客户端获取百度网盘文件真实下载地址的油猴脚本，支持Windows，Mac，Linux，Android等多平台，可使用IDM，XDown等多线程加速工具加速下载，告别下载限速问题。
 // @author            syhyz1990
@@ -41,10 +41,11 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
     e = e || "", t = t || "", i = i || "", console.group("[百度网盘直链下载助手]"), console.log(e, t, i), console.groupEnd();
   }
 
-  function t(e, t) {
-    var i = localStorage.getItem("baiduyunPlugin_BDUSS") ? localStorage.getItem("baiduyunPlugin_BDUSS") : '{"baiduyunPlugin_BDUSS":""}',
-        n = JSON.parse(i).BDUSS;
-    return n ? 'aria2c "' + e + '" --out "' + t + '" --header "User-Agent: ' + w + '" --header "Cookie: BDUSS=' + n + '"' : (swal({
+  function t(e, t, i) {
+    w = i || w;
+    var n = localStorage.getItem("baiduyunPlugin_BDUSS") ? localStorage.getItem("baiduyunPlugin_BDUSS") : '{"baiduyunPlugin_BDUSS":""}',
+        a = JSON.parse(n).BDUSS;
+    return a ? 'aria2c "' + e + '" --out "' + t + '" --header "User-Agent: ' + w + '" --header "Cookie: BDUSS=' + a + '"' : (swal({
       title: "提示",
       text: "请先安装【网盘万能助手】",
       buttons: {confirm: {text: "安装", value: "confirm"}}
@@ -59,11 +60,11 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
 
   function n() {
     function t() {
-      W = j(), Z = R(), ee = U(), te = l(), re = V(), "all" == re && (ce = N()), "category" == re && (pe = O()), "search" == re && (he = D()), a(), i(), n();
+      Q = j(), Z = R(), ee = H(), te = l(), re = z(), "all" == re && (ce = O()), "category" == re && (pe = N()), "search" == re && (he = D()), a(), i(), n();
     }
 
     function i() {
-      "all" == re ? ne = F() : "category" == re ? ne = P() : "search" == re && (ne = z());
+      "all" == re ? ne = F() : "category" == re ? ne = V() : "search" == re && (ne = L());
     }
 
     function n() {
@@ -84,7 +85,7 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
 
     function c() {
       window.addEventListener("hashchange", function (e) {
-        a(), "all" == V() ? re == V() ? ce != N() && (ce = N(), i(), n()) : (re = V(), ce = N(), i(), n()) : "category" == V() ? re == V() ? pe != O() && (re = V(), pe = O(), i(), n()) : (re = V(), pe = O(), i(), n()) : "search" == V() && (re == V() ? he != D() && (re = V(), he = D(), i(), n()) : (re = V(), he = D(), i(), n()));
+        a(), "all" == z() ? re == z() ? ce != O() && (ce = O(), i(), n()) : (re = z(), ce = O(), i(), n()) : "category" == z() ? re == z() ? pe != N() && (re = z(), pe = N(), i(), n()) : (re = z(), pe = N(), i(), n()) : "search" == z() && (re == z() ? he != D() && (re = z(), he = D(), i(), n()) : (re = z(), he = D(), i(), n()));
       });
     }
 
@@ -212,17 +213,17 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
           y = $('<a id="appid-setting" class="g-button-menu" href="javascript:;">脚本配置</a>');
       w.append(m).append(b).append(y), f.append(v.append(g).append(w)), f.hover(function () {
         v.toggleClass("button-open");
-      }), m.click(G), b.click(T), y.click(A);
+      }), m.click(M), b.click(T), y.click(A);
       var x = $('<span class="g-button-menu" style="display:block"></span>'),
           k = $('<span class="g-dropdown-button g-dropdown-button-second" menulevel="2"></span>'),
           _ = $('<a class="g-button" href="javascript:;"><span class="g-button-right"><span class="text" style="width:auto">aria外链下载</span></span></a>'),
           S = $('<span class="menu" style="width:120px;left:79px"></span>'),
-          M = $('<a id="batchlink-outerlink" class="g-button-menu" href="javascript:;">显示链接</a>');
-      S.append(M), x.append(k.append(_).append(S)), x.hover(function () {
+          G = $('<a id="batchlink-outerlink" class="g-button-menu" href="javascript:;">显示链接</a>');
+      S.append(G), x.append(k.append(_).append(S)), x.hover(function () {
         k.toggleClass("button-open");
-      }), M.click(T);
-      var E = $('<span class="g-button-menu" style="display:block;cursor: pointer">分享文件</span>');
-      E.click(H), i.append(f).append(n).append(l).append(E), e.append(t).append(i), e.hover(function () {
+      }), G.click(T);
+      var E = $('<span class="g-button-menu" style="display:block;cursor: pointer">分享选中文件</span>');
+      E.click(U), i.append(f).append(l).append(E), e.append(t).append(i), e.hover(function () {
         e.toggleClass("button-open");
       }), $("." + h["list-tools"]).append(e), $("." + h["list-tools"]).css("height", "40px");
     }
@@ -232,14 +233,14 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       /^\d{1,6}$/.test(e) && (GM_setValue("secretCode", e), swal("神秘代码执行成功 , 点击确定将自动刷新"), history.go(0));
     }
 
-    function G(t) {
+    function M(t) {
       e("选中文件列表：", ae);
       var i = t.target.id, n = void 0;
       if ("download-direct" == i) {
         var a = void 0;
         if (0 === ae.length) return void swal(f.unselected);
-        1 == ae.length && (a = 1 === ae[0].isdir ? "batch" : "dlink"), ae.length > 1 && (a = "batch"), ie = L(ae);
-        var o = K(a);
+        1 == ae.length && (a = 1 === ae[0].isdir ? "batch" : "dlink"), ae.length > 1 && (a = "batch"), ie = P(ae);
+        var o = B(a);
         if (0 !== o.errno) return -1 == o.errno ? void swal("文件不存在或已被百度和谐，无法下载！") : 112 == o.errno ? void swal("页面过期，请刷新重试！") : void swal("发生错误！");
         if ("dlink" == a) n = o.dlink[0].dlink; else {
           if ("batch" != a) return void swal("发生错误！");
@@ -251,20 +252,20 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
         if (1 == ae[0].isdir) return void swal(f.dir);
         "download-api" == i && (n = J(ae[0].path));
       }
-      X(n);
+      q(n);
     }
 
     function T(t) {
       if (e("选中文件列表：", ae), 0 === ae.length) return void swal(f.unselected);
       var i = t.target.id, n = void 0, a = void 0;
       if (n = -1 == i.indexOf("https") ? -1 == i.indexOf("http") ? location.protocol + ":" : "http:" : "https:", oe = [], se = [], -1 != i.indexOf("direct")) {
-        oe = M(n);
+        oe = G(n);
         if (0 === oe.length) return void swal("没有链接可以显示，不要选中文件夹！");
         ue.open({
           title: "直链下载",
           type: "batch",
           list: oe,
-          tip: '点击链接直接下载，请先升级 <a href="https://www.baiduyun.wiki/zh-cn/assistant.html">[网盘万能助手]</a> 至 <b>v2.2.0</b>，本链接仅支持小文件下载（<300M）',
+          tip: '点击链接直接下载，请先升级 <a href="https://www.baiduyun.wiki/zh-cn/assistant.html">[网盘万能助手]</a> 至 <b>v2.2.1</b>，本链接仅支持小文件下载（<300M）',
           showcopy: !1
         });
       }
@@ -272,7 +273,7 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
         if (oe = E(n), a = '请先安装 <a  href="https://www.baiduyun.wiki/zh-cn/assistant.html">网盘万能助手</a> 请将链接复制到支持Aria的下载器中, 推荐使用 <a href="http://pan.baiduyun.wiki/down">XDown</a>', 0 === oe.length) return void swal("没有链接可以显示，不要选中文件夹！");
         ue.open({title: "Aria链接", type: "batchAria", list: oe, tip: a, showcopy: !0});
       } else if (-1 != i.indexOf("api")) {
-        if (oe = E(n), a = '请先安装 <a href="https://www.baiduyun.wiki/zh-cn/assistant.html">网盘万能助手</a> <b>v2.2.0</b> 后点击链接下载 <a href="https://www.baiduyun.wiki">无效？</a>', 0 === oe.length) return void swal("没有链接可以显示，API链接不要全部选中文件夹！");
+        if (oe = E(n), a = '请先安装 <a href="https://www.baiduyun.wiki/zh-cn/assistant.html">网盘万能助手</a> <b>v2.2.1</b> 后点击链接下载 <a href="https://www.baiduyun.wiki">无效？</a>', 0 === oe.length) return void swal("没有链接可以显示，API链接不要全部选中文件夹！");
         ue.open({title: "API下载链接", type: "batch", list: oe, tip: a});
       } else -1 != i.indexOf("outerlink") && C(function (e) {
         if (oe = I(e), 0 === oe.length) return void swal("没有链接可以显示，API链接不要全部选中文件夹！");
@@ -288,11 +289,11 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       });
     }
 
-    function M(e) {
+    function G(e) {
       var t = [];
       return $.each(ae, function (i, n) {
         var a = void 0, o = void 0, s = void 0;
-        a = 0 == n.isdir ? "dlink" : "batch", ie = L([n]), s = K(a), 0 == s.errno ? ("dlink" == a ? o = s.dlink[0].dlink : "batch" == a && (o = s.dlink), o = o.replace(/^([A-Za-z]+):/, e)) : o = "error", t.push({
+        a = 0 == n.isdir ? "dlink" : "batch", ie = P([n]), s = B(a), 0 == s.errno ? ("dlink" == a ? o = s.dlink[0].dlink : "batch" == a && (o = s.dlink), o = o.replace(/^([A-Za-z]+):/, e)) : o = "error", t.push({
           filename: n.filename,
           downloadlink: o
         });
@@ -311,7 +312,7 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
 
     function C(e) {
       $.each(ae, function (t, i) {
-        1 != i.isdir && q(i.path, function (t) {
+        1 != i.isdir && W(i.path, function (t) {
           var n = [];
           0 == t.errno ? n.push({filename: i.filename, links: t.urls}) : n.push({
             filename: i.filename,
@@ -331,19 +332,19 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
     function j() {
       var e = void 0;
       try {
-        e = new Function("return " + Q.sign2)();
+        e = new Function("return " + Y.sign2)();
       } catch (e) {
         throw new Error(e.message);
       }
-      return o(e(Q.sign5, Q.sign1));
+      return o(e(Y.sign5, Y.sign1));
     }
 
-    function N() {
+    function O() {
       var e = location.hash, t = new RegExp("path=([^&]*)(&|$)", "i"), i = e.match(t);
       return decodeURIComponent(i[1]);
     }
 
-    function O() {
+    function N() {
       var e = location.hash, t = new RegExp("type=([^&]*)(&|$)", "i"), i = e.match(t);
       return decodeURIComponent(i[1]);
     }
@@ -353,13 +354,13 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       return decodeURIComponent(i[1]);
     }
 
-    function V() {
+    function z() {
       var e = location.hash;
       return e.substring(e.indexOf("#") + 2, e.indexOf("?"));
     }
 
     function F() {
-      var e = [], t = fe + "list", i = N();
+      var e = [], t = fe + "list", i = O();
       te = l();
       var n = {
         dir: i,
@@ -381,8 +382,8 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       }), e;
     }
 
-    function P() {
-      var e = [], t = fe + "categorylist", i = O();
+    function V() {
+      var e = [], t = fe + "categorylist", i = N();
       te = l();
       var n = {
         category: i,
@@ -403,7 +404,7 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       }), e;
     }
 
-    function z() {
+    function L() {
       var e = [], t = fe + "search";
       te = l(), he = D();
       var i = {
@@ -428,7 +429,7 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       }), e;
     }
 
-    function L(e) {
+    function P(e) {
       if (0 === e.length) return null;
       var t = [];
       return $.each(e, function (e, i) {
@@ -437,21 +438,21 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
     }
 
     function R() {
-      return Q.timestamp;
-    }
-
-    function U() {
-      return Q.MYBDSTOKEN;
+      return Y.timestamp;
     }
 
     function H() {
+      return Y.MYBDSTOKEN;
+    }
+
+    function U() {
       var e = [];
       if (0 === ae.length) return void swal(f.unselected);
       $.each(ae, function (t, i) {
         e.push(i.path);
       });
       var t = "https://pan.baidu.com/share/set?channel=chunlei&clienttype=0&web=1&channel=chunlei&web=1&app_id=250528&bdstoken=" + ee + "&logid=" + te + "&clienttype=0",
-          i = B(), n = {schannel: 4, channel_list: JSON.stringify([]), period: 7, pwd: i, fid_list: L(ae)};
+          i = K(), n = {schannel: 4, channel_list: JSON.stringify([]), period: 7, pwd: i, fid_list: P(ae)};
       $.ajax({
         url: t, async: !1, method: "POST", data: n, success: function (e) {
           0 === e.errno && swal({
@@ -465,7 +466,7 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       });
     }
 
-    function B() {
+    function K() {
       function e(e, t) {
         return Math.round(Math.random() * (e - t) + t);
       }
@@ -477,10 +478,10 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       return n;
     }
 
-    function K(e) {
+    function B(e) {
       var t = void 0;
       te = l();
-      var i = {bdstoken: ee, logid: te}, n = {sign: W, timestamp: Z, fidlist: ie, type: e},
+      var i = {bdstoken: ee, logid: te}, n = {sign: Q, timestamp: Z, fidlist: ie, type: e},
           a = "https://pan.baidu.com/api/download?bdstoken=" + i.bdstoken + "&web=5&app_id=250528&logid=" + i.logid + "=&channel=chunlei&clienttype=1";
       return $.ajax({
         url: a, async: !1, method: "POST", data: n, success: function (e) {
@@ -493,7 +494,7 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       return ve + "file?method=download&path=" + encodeURIComponent(e) + "&app_id=" + v;
     }
 
-    function q(e, t) {
+    function W(e, t) {
       var i = void 0, n = ge + "file?method=locatedownload&app_id=" + v + "&ver=4.0&path=" + encodeURIComponent(e);
       GM_xmlhttpRequest({
         method: "POST", url: n, headers: {"User-Agent": w}, onload: function (e) {
@@ -504,33 +505,33 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       });
     }
 
-    function X(t) {
+    function q(t) {
       e("下载链接：" + t), $("#helperdownloadiframe").attr("src", t);
     }
 
-    function Y() {
+    function X() {
       var e = $('<div class="helper-hide" style="padding:0;margin:0;display:block"></div>'),
           t = $('<iframe src="javascript:;" id="helperdownloadiframe" style="display:none"></iframe>');
       e.append(t), $("body").append(e);
     }
 
-    var Q = void 0, W = void 0, Z = void 0, ee = void 0, te = void 0, ie = void 0, ne = [], ae = [], oe = [], se = [],
+    var Y = void 0, Q = void 0, Z = void 0, ee = void 0, te = void 0, ie = void 0, ne = [], ae = [], oe = [], se = [],
         de = "list", le = void 0, re = void 0, ce = void 0, pe = void 0, ue = void 0, he = void 0,
         fe = location.protocol + "//" + location.host + "/api/",
         ve = location.protocol + "//pcs.baidu.com/rest/2.0/pcs/",
         ge = location.protocol + "//d.pcs.baidu.com/rest/2.0/pcs/";
     this.init = function () {
-      if (Q = unsafeWindow.yunData, e("初始化信息:", Q), void 0 === Q) return void e("页面未正常加载，或者百度已经更新！");
-      t(), d(), _(), S(), Y(), ue = new r({addCopy: !0}), e("下载助手加载成功！当前版本：", u);
+      if (Y = unsafeWindow.yunData, e("初始化信息:", Y), void 0 === Y) return void e("页面未正常加载，或者百度已经更新！");
+      t(), d(), _(), S(), X(), ue = new r({addCopy: !0}), e("下载助手加载成功！当前版本：", u);
     };
   }
 
   function a() {
     function t() {
-      if (ce = i(), q = J.SIGN, X = J.TIMESTAMP, Y = J.MYBDSTOKEN, Q = "chunlei", W = 0, Z = 1, ee = v, te = l(), ie = 0, ne = "share", oe = J.SHARE_ID, ae = J.SHARE_UK, "secret" == ce && (de = o()), n()) {
+      if (ce = i(), W = J.SIGN, q = J.TIMESTAMP, X = J.MYBDSTOKEN, Y = "chunlei", Q = 0, Z = 1, ee = v, te = l(), ie = 0, ne = "share", oe = J.SHARE_ID, ae = J.SHARE_UK, "secret" == ce && (de = o()), n()) {
         var e = {};
         2 == J.CATEGORY ? (e.filename = J.FILENAME, e.path = J.PATH, e.fs_id = J.FS_ID, e.isdir = 0) : void 0 != J.FILEINFO && (e.filename = J.FILEINFO[0].server_filename, e.path = J.FILEINFO[0].path, e.fs_id = J.FILEINFO[0].fs_id, e.isdir = J.FILEINFO[0].isdir), me.push(e);
-      } else le = J.SHARE_ID, ue = s(), he = p(), we = V();
+      } else le = J.SHARE_ID, ue = s(), he = p(), we = z();
     }
 
     function i() {
@@ -572,9 +573,9 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
           r = $('<a data-menu-id="b-menu208" class="g-button-menu" href="javascript:;">显示aria链接</a>'),
           c = $('<a data-menu-id="b-menu209" style="color: #c7c7c7" class="g-button-menu" href="javascript:;">异常反馈</a>'),
           p = $('<iframe src="https://ghbtns.com/github-btn.html?user=syhyz1990&repo=baiduyun&type=star&count=true" frameborder="0" scrolling="0" style="height: 20px;max-width: 120px;padding: 0 5px;box-sizing: border-box;margin-top: 5px;"></iframe>');
-      a.append(d).append(l).append(r).append(o).append(c).append(p), t.append(i), e.append(t).append(a), e.hover(function () {
+      a.append(r).append(o).append(c).append(p), t.append(i), e.append(t).append(a), e.hover(function () {
         e.toggleClass("button-open");
-      }), o.click(y), s.click(x), d.click(F), l.click(U), r.click(k), c.click(b), $("div.module-share-top-bar div.bar div.x-button-box").append(e);
+      }), o.click(y), s.click(x), d.click(F), l.click(H), r.click(k), c.click(b), $("div.module-share-top-bar div.bar div.x-button-box").append(e);
     }
 
     function m() {
@@ -593,7 +594,7 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
     }
 
     function y() {
-      if (null === Y) return swal(f.unlogin), !1;
+      if (null === X) return swal(f.unlogin), !1;
       if (0 === me.length) return void swal(f.unselected);
       if (a()) return void swal({
         title: "提示",
@@ -640,9 +641,9 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
     }
 
     function k() {
-      return null === Y ? (swal(f.unlogin), !1) : (e("选中文件列表：", me), 0 === me.length ? (swal(f.unselected), !1) : 1 == me[0].isdir ? (swal(f.toobig), !1) : (pe = "ariclink", void H(function (e) {
+      return null === X ? (swal(f.unlogin), !1) : (e("选中文件列表：", me), 0 === me.length ? (swal(f.unselected), !1) : 1 == me[0].isdir ? (swal(f.toobig), !1) : (pe = "ariclink", void U(function (e) {
         if (void 0 !== e) if (-20 == e.errno) {
-          if (!(re = P()) || 0 !== re.errno) return swal("获取验证码失败！"), !1;
+          if (!(re = V()) || 0 !== re.errno) return swal("获取验证码失败！"), !1;
           ge.open(re);
         } else {
           if (112 == e.errno) return swal("页面过期，请刷新重试"), !1;
@@ -666,24 +667,24 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
     }
 
     function S() {
-      A(), M(), E(), I(), N();
+      A(), G(), E(), I(), O();
     }
 
     function A() {
       window.addEventListener("hashchange", function (e) {
-        he = p(), ue == s() || (ue = s(), G(), T());
+        he = p(), ue == s() || (ue = s(), M(), T());
       });
     }
 
-    function G() {
-      we = V();
+    function M() {
+      we = z();
     }
 
     function T() {
       me = [];
     }
 
-    function M() {
+    function G() {
       p();
     }
 
@@ -729,7 +730,7 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       });
     }
 
-    function N() {
+    function O() {
       $("div." + h["list-view"] + " dd").each(function (t, i) {
         $(i).bind("click", function (t) {
           var i = t.target.nodeName.toLowerCase();
@@ -747,7 +748,7 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       });
     }
 
-    function O() {
+    function N() {
       $("div." + h["list-view"] + " dd").each(function (e, t) {
         $(t).unbind("click");
       });
@@ -756,13 +757,13 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
     function D() {
       var e = window.MutationObserver, t = {childList: !0};
       fe = new e(function (e) {
-        C(), j(), O(), E(), I(), N();
+        C(), j(), N(), E(), I(), O();
       });
       var i = document.querySelector("." + h["list-view"]), n = document.querySelector("." + h["grid-view"]);
       fe.observe(i, t), fe.observe(n, t);
     }
 
-    function V() {
+    function z() {
       var e = [];
       if ("/" == s()) e = J.FILEINFO; else {
         te = l();
@@ -775,9 +776,9 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
           web: Z,
           dir: s(),
           t: Math.random(),
-          bdstoken: Y,
-          channel: Q,
-          clienttype: W,
+          bdstoken: X,
+          channel: Y,
+          clienttype: Q,
           app_id: ee,
           logid: te
         };
@@ -791,21 +792,21 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
     }
 
     function F() {
-      return null === Y ? (swal(f.unlogin), !1) : (e("选中文件列表：", me), 0 === me.length ? (swal(f.unselected), !1) : me.length > 1 ? (swal(f.morethan), !1) : 1 == me[0].isdir ? (swal(f.dir), !1) : (pe = "download", void H(function (e) {
+      return null === X ? (swal(f.unlogin), !1) : (e("选中文件列表：", me), 0 === me.length ? (swal(f.unselected), !1) : me.length > 1 ? (swal(f.morethan), !1) : 1 == me[0].isdir ? (swal(f.dir), !1) : (pe = "download", void U(function (e) {
         if (void 0 !== e) if (-20 == e.errno) {
-          if (re = P(), 0 !== re.errno) return void swal("获取验证码失败！");
+          if (re = V(), 0 !== re.errno) return void swal("获取验证码失败！");
           ge.open(re);
         } else if (112 == e.errno) swal("页面过期，请刷新重试"); else if (0 === e.errno) {
           var t = e.list[0].dlink;
-          K(t);
+          B(t);
         } else swal(f.fail);
       })));
     }
 
-    function P() {
+    function V() {
       var e = be + "getvcode", t = void 0;
       te = l();
-      var i = {prod: "pan", t: Math.random(), bdstoken: Y, channel: Q, clienttype: W, web: Z, app_id: ee, logid: te};
+      var i = {prod: "pan", t: Math.random(), bdstoken: X, channel: Y, clienttype: Q, web: Z, app_id: ee, logid: te};
       return $.ajax({
         url: e, method: "GET", async: !1, data: i, success: function (e) {
           t = e;
@@ -813,27 +814,27 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       }), t;
     }
 
-    function z() {
-      re = P(), $("#dialog-img").attr("src", re.img);
+    function L() {
+      re = V(), $("#dialog-img").attr("src", re.img);
     }
 
-    function L() {
+    function P() {
       var e = $("#dialog-input").val();
-      return 0 === e.length ? void $("#dialog-err").text("请输入验证码") : e.length < 4 ? void $("#dialog-err").text("验证码输入错误，请重新输入") : void B(e, function (e) {
+      return 0 === e.length ? void $("#dialog-err").text("请输入验证码") : e.length < 4 ? void $("#dialog-err").text("验证码输入错误，请重新输入") : void K(e, function (e) {
         if (-20 == e.errno) {
-          if (ge.close(), $("#dialog-err").text("验证码输入错误，请重新输入"), z(), !re || 0 !== re.errno) return void swal("获取验证码失败！");
+          if (ge.close(), $("#dialog-err").text("验证码输入错误，请重新输入"), L(), !re || 0 !== re.errno) return void swal("获取验证码失败！");
           ge.open();
         } else if (0 === e.errno) {
           if (ge.close(), "download" == pe) {
             if (e.list.length > 1 || 1 == e.list[0].isdir) return swal(f.morethan), !1;
             var t = e.list[0].dlink;
-            K(t);
+            B(t);
           } else if ("link" == pe) {
             ve.open({
               title: "下载链接（仅显示文件链接）",
               type: "shareLink",
               list: e.list,
-              tip: '点击链接直接下载，请先升级 <a href="https://www.baiduyun.wiki/zh-cn/assistant.html">[网盘万能助手]</a> 至 <b>v2.2.0</b>',
+              tip: '点击链接直接下载，请先升级 <a href="https://www.baiduyun.wiki/zh-cn/assistant.html">[网盘万能助手]</a> 至 <b>v2.2.1</b>',
               showcopy: !1
             });
           } else if ("ariclink" == pe) {
@@ -856,10 +857,10 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       }), "[" + e + "]";
     }
 
-    function U() {
-      return null === Y ? (swal(f.unlogin), !1) : (e("选中文件列表：", me), 0 === me.length ? (swal(f.unselected), !1) : 1 == me[0].isdir ? (swal(f.dir), !1) : (pe = "link", void H(function (e) {
+    function H() {
+      return null === X ? (swal(f.unlogin), !1) : (e("选中文件列表：", me), 0 === me.length ? (swal(f.unselected), !1) : 1 == me[0].isdir ? (swal(f.dir), !1) : (pe = "link", void U(function (e) {
         if (void 0 !== e) if (-20 == e.errno) {
-          if (!(re = P()) || 0 !== re.errno) return swal("获取验证码失败！"), !1;
+          if (!(re = V()) || 0 !== re.errno) return swal("获取验证码失败！"), !1;
           ge.open(re);
         } else {
           if (112 == e.errno) return swal("页面过期，请刷新重试"), !1;
@@ -868,7 +869,7 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
               title: "下载链接（仅显示文件链接）",
               type: "shareLink",
               list: e.list,
-              tip: '点击链接直接下载，请先升级 <a href="https://www.baiduyun.wiki/zh-cn/assistant.html">[网盘万能助手]</a> 至 <b>v2.2.0</b>',
+              tip: '点击链接直接下载，请先升级 <a href="https://www.baiduyun.wiki/zh-cn/assistant.html">[网盘万能助手]</a> 至 <b>v2.2.1</b>',
               showcopy: !1
             });
           } else swal(f.fail);
@@ -876,14 +877,14 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       })));
     }
 
-    function H(e) {
-      if (null === Y) return swal(f.unlogin), "";
+    function U(e) {
+      if (null === X) return swal(f.unlogin), "";
       var t = void 0;
       if (n) {
         se = R(), te = l();
         var i = new FormData;
         i.append("encrypt", ie), i.append("product", ne), i.append("uk", ae), i.append("primaryid", oe), i.append("fid_list", se), "secret" == ce && i.append("extra", de), $.ajax({
-          url: "https://api.baiduyun.wiki/download?sign=" + q + "&timestamp=" + X + "&logid=" + te + "&init=" + GM_getValue("init"),
+          url: "https://api.baiduyun.wiki/download?sign=" + W + "&timestamp=" + q + "&logid=" + te + "&init=" + GM_getValue("init"),
           cache: !1,
           method: "GET",
           async: !1,
@@ -898,13 +899,13 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       }
     }
 
-    function B(e, t) {
+    function K(e, t) {
       var i = void 0;
       if (n) {
         se = R(), te = l();
         var a = new FormData;
         a.append("encrypt", ie), a.append("product", ne), a.append("uk", ae), a.append("primaryid", oe), a.append("fid_list", se), a.append("vcode_input", e), a.append("vcode_str", re.vcode), "secret" == ce && a.append("extra", de), $.ajax({
-          url: "https://api.baiduyun.wiki/download?sign=" + q + "&timestamp=" + X + "&logid=" + te,
+          url: "https://api.baiduyun.wiki/download?sign=" + W + "&timestamp=" + q + "&logid=" + te,
           cache: !1,
           method: "GET",
           async: !1,
@@ -919,18 +920,18 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       }
     }
 
-    function K(t) {
+    function B(t) {
       e("下载链接：" + t), $("#helperdownloadiframe").attr("src", t);
     }
 
-    var J = void 0, q = void 0, X = void 0, Y = void 0, Q = void 0, W = void 0, Z = void 0, ee = void 0, te = void 0,
+    var J = void 0, W = void 0, q = void 0, X = void 0, Y = void 0, Q = void 0, Z = void 0, ee = void 0, te = void 0,
         ie = void 0, ne = void 0, ae = void 0, oe = void 0, se = void 0, de = void 0, le = void 0, re = void 0,
         ce = void 0, pe = void 0, ue = void 0, he = void 0, fe = void 0, ve = void 0, ge = void 0, we = [], me = [],
         be = location.protocol + "//" + location.host + "/api/",
         ye = location.protocol + "//" + location.host + "/share/list";
     this.init = function () {
       if (J = unsafeWindow.yunData, e("初始化信息:", J), void 0 === J) return void e("页面未正常加载，或者百度已经更新！");
-      t(), w(), ve = new r({addCopy: !1}), ge = new c(z, L), _(), n() || (S(), D()), e("下载助手加载成功！当前版本：", u);
+      t(), w(), ve = new r({addCopy: !1}), ge = new c(L, P), _(), n() || (S(), D()), e("下载助手加载成功！当前版本：", u);
     };
   }
 
@@ -1082,7 +1083,7 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
         "batch" == a.type ? $.each(n, function (t, i) {
           "error" != i.downloadlink && (t == n.length - 1 ? e += i.downloadlink : e += i.downloadlink + "\r\n");
         }) : "batchAria" == a.type ? $.each(n, function (i, a) {
-          "error" != a.downloadlink && (i == n.length - 1 ? e += t(a.downloadlink, a.filename) : e += t(a.downloadlink, a.filename) + "\r\n");
+          "error" != a.downloadlink && (i == n.length - 1 ? e += t(a.downloadlink, a.filename, "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36") : e += t(a.downloadlink, a.filename, "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36") + "\r\n");
         }) : "shareLink" == a.type ? $.each(n, function (t, i) {
           "error" != i.dlink && (t == n.length - 1 ? e += i.dlink : e += i.dlink + "\r\n");
         }) : "shareAriaLink" == a.type && $.each(n, function (i, a) {
@@ -1192,7 +1193,7 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
 
     function d() {
       GM_registerMenuCommand("网盘脚本配置", function () {
-        void 0 === GM_getValue("SETTING_A") && GM_setValue("SETTING_A", !0), void 0 === GM_getValue("SETTING_P") && GM_setValue("SETTING_P", !1), void 0 === GM_getValue("SETTING_H") && GM_setValue("SETTING_H", !0);
+        void 0 === GM_getValue("SETTING_A") && GM_setValue("SETTING_A", !0), void 0 === GM_getValue("SETTING_H") && GM_setValue("SETTING_H", !0);
         var e = "";
         GM_getValue("SETTING_H") ? e += '<label style="display:flex;align-items: center;justify-content: space-between;padding-top: 20px;">开启教程<input type="checkbox" id="S-H" checked style="width: 16px;height: 16px;"></label>' : e += '<label style="display:flex;align-items: center;justify-content: space-between;padding-top: 20px;">开启教程<input type="checkbox" id="S-H" style="width: 16px;height: 16px;"></label>', GM_getValue("SETTING_A") ? e += '<label style="display:flex;align-items: center;justify-content: space-between;padding-top: 20px;">开启广告(支持作者)<input type="checkbox" id="S-A" checked style="width: 16px;height: 16px;"></label>' : e += '<label style="display:flex;align-items: center;justify-content: space-between;padding-top: 20px;">开启广告(支持作者)<input type="checkbox" id="S-A" style="width: 16px;height: 16px;"></label>', e = "<div>" + e + "</div>";
         var t = $(e);
@@ -1201,8 +1202,6 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
         GM_setValue("SETTING_A", $(this)[0].checked);
       }), $(document).on("change", "#S-H", function () {
         GM_setValue("SETTING_H", $(this)[0].checked);
-      }), $(document).on("change", "#S-P", function () {
-        GM_setValue("SETTING_P", $(this)[0].checked);
       });
     }
 
@@ -1225,7 +1224,7 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
     };
   }
 
-  var u = "2.9.5", h = {
+  var u = "2.9.6", h = {
         list: "zJMtAEb",
         grid: "fyQgAEb",
         "list-grid-switch": "auiaQNyn",
@@ -1247,11 +1246,11 @@ var _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator 
       }, f = {
         dir: "提示：此方式不支持整个文件夹下载，可进入文件夹内获取文件链接下载",
         unlogin: "提示：必须登录百度网盘后才能使用此功能哦!!!",
-        fail: "提示：获取下载链接失败！请刷新网页后重试！",
-        unselected: "提示：请先勾选要下载的文件，否则刷新后重试！",
+        fail: "提示：获取下载链接失败！请刷新后重试！",
+        unselected: "提示：请先勾选文件，若已勾选请刷新后重试！",
         morethan: "提示：多个文件请点击【显示链接】",
         toobig: "提示：只支持300M以下的文件夹，若链接无法下载，请进入文件夹后勾选文件获取！"
-      }, v = GM_getValue("secretCode") ? GM_getValue("secretCode") : "624966",
+      }, v = GM_getValue("secretCode") ? GM_getValue("secretCode") : "778750",
       g = GM_getValue("savePath") ? GM_getValue("savePath") : "/PanHelper", w = "";
   $(function () {
     (new p).init();

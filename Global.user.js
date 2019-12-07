@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         全局工具集
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/Global.user.js
-// @version      1.0
+// @version      1.1
 // @description  全局工具集，包含视频全屏、禁止浏览器自动添加搜索引擎
 // @author       RichieMay
 // @grant        none
-// @match        *
+// @include      *
 // ==/UserScript==
 
 (function() {

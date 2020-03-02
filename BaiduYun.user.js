@@ -7,7 +7,7 @@
 // @author            syhyz1990
 // @license           AGPL
 // @supportURL        https://github.com/syhyz1990/baiduyun
-// @updateURL         https://www.baiduyun.wiki/baiduyun.user.js
+// @updateURL         https://github.com/RichieMay/WebTools/raw/master/BaiduYun.user.js
 // @match             *://pan.baidu.com/disk/home*
 // @match             *://yun.baidu.com/disk/home*
 // @match             *://pan.baidu.com/s/*

@@ -23,6 +23,12 @@
         });
     }
 
+    function ShowAnswer() {
+        document.cookie="olduser=1;domain=it1352.com";
+    }
+
+    ShowAnswer();
+
     EnableFullScreen();
 
     DisableAddSearchEngines();

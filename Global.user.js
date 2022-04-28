@@ -24,7 +24,12 @@
     }
 
     function ShowAnswer() {
-        document.cookie="olduser=1;domain=it1352.com";
+        if (document.domain.indexOf('it1352.com') !== -1) {
+            if (document.cookie.indexOf('olduser=1') === -1) {
+                document.cookie="olduser=1;domain=it1352.com";
+                window.location.reload();
+            }
+        }
     }
 
     ShowAnswer();

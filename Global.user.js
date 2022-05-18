@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局工具集
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/Global.user.js
-// @version      1.3
+// @version      1.4
 // @description  全局工具集，包含视频全屏、禁止浏览器自动添加搜索引擎、it1352.com网站免登录查看问题答案
 // @author       RichieMay
 // @grant        none
@@ -30,10 +30,14 @@
                 window.location.reload();
             }
         } else if (document.domain.indexOf('yiidian.com') !== -1) {
+            ['btw-modal-wrap', 'read-more-wrap'].forEach(function(id) {
+                let wrap = document.getElementById(id);
+                if (null != wrap) {
+                    wrap.remove();
+                }
+             })
+
             document.getElementById('yArticle').removeAttribute("style");
-            [].forEach.call(document.getElementsByClassName("read-more-wrap btw-modal-wrap"), function(wrap) {
-                wrap.remove();
-            })
         }
     }
 

@@ -13,6 +13,11 @@
 
     function EnableFullScreen() {
         [].forEach.call(document.getElementsByTagName('iframe'), function(iframe){
+            if (iframe.src.indexOf('pos.baidu.com') !== -1) {
+                iframe.remove();
+                return;
+            }
+
             iframe.setAttribute('allowFullScreen', 'true');
         });
     }

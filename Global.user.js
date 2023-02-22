@@ -29,7 +29,7 @@
                 document.cookie="olduser=1;domain=it1352.com";
                 window.location.reload();
             }
-            
+
             return;
         }
 

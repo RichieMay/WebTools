@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ExtendCozeChat
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ExtendCoze.user.js
-// @version      1.0.0
+// @version      1.0.1
 // @description  扩展Coze聊天页
 // @author       RichieMay
 // @match        http*://*.coze.com/*
@@ -13,21 +13,20 @@
 (function() {
     'use strict';
 
-    let observer = new MutationObserver(function(mutations){
+    new MutationObserver(function(mutations) {
       mutations.forEach(function(mutation) {
           for (let i = 0; i < mutation.addedNodes.length; i++) {
               let containers = mutation.addedNodes[i].getElementsByClassName('sidesheet-container')
-              if (containers.length > 0)
-              {
-                  containers[0].children[0].style.position = 'fixed'
-                  containers[0].children[0].style.visibility = 'hidden'
-                  containers[0].setAttribute('style', 'grid-template-columns:25fr 70fr 5fr;')
-
-                  observer.disconnect()
+              if (containers.length > 0) {
+                  if (containers[0].getAttribute('extend') == null) {
+                      containers[0].setAttribute('extend', true)
+                        containers[0].setAttribute('style', 'grid-template-columns:25fr 70fr 5fr;')
+                      
+                      containers[0].children[0].style.position = 'fixed'
+                      containers[0].children[0].style.visibility = 'hidden'
+                  }
               }
           }
       });
-    });
-
-    observer.observe(document.getElementById('root'), {childList : true, subtree: true});
+    }).observe(document.getElementById('root'), {childList : true, subtree: true});
 })();

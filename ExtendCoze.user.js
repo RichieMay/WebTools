@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ExtendCozeChat
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ExtendCoze.user.js
-// @version      1.0.3
+// @version      1.0.4
 // @description  扩展Coze聊天页
 // @author       RichieMay
 // @match        http*://*.coze.com/*
@@ -13,9 +13,9 @@
 (function() {
     'use strict';
 
-    new MutationObserver(function(mutations) {
-      mutations.forEach(function(mutation) {
-          mutation.addedNodes.forEach(function(node) {
+    new MutationObserver(function(mutationRecords) {
+      for (const mutationRecord of mutationRecords) {
+          for (const node of mutationRecord.addedNodes) {
               if (node instanceof HTMLDivElement) {
                   let containers = node.getElementsByClassName('sidesheet-container')
                   if (containers.length > 0) {
@@ -26,9 +26,11 @@
                           containers[0].children[0].style.position = 'fixed'
                           containers[0].children[0].style.visibility = 'hidden'
                       }
+
+                      return
                   }
               }
-          })
-      });
+          }
+      }
     }).observe(document.getElementById('root'), {childList : true, subtree: true});
 })();

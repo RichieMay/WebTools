@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ExtendCozeChat
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ExtendCoze.user.js
-// @version      1.0.4
+// @version      1.0.5
 // @description  扩展Coze聊天页
 // @author       RichieMay
 // @match        http*://*.coze.com/*
@@ -13,7 +13,7 @@
 (function() {
     'use strict';
 
-    new MutationObserver(function(mutationRecords) {
+    new MutationObserver(function(mutationRecords, observer) {
       for (const mutationRecord of mutationRecords) {
           for (const node of mutationRecord.addedNodes) {
               if (node instanceof HTMLDivElement) {
@@ -27,6 +27,7 @@
                           containers[0].children[0].style.visibility = 'hidden'
                       }
 
+                      observer.takeRecords()
                       return
                   }
               }

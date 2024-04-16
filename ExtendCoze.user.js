@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ExtendCozeChat
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ExtendCoze.user.js
-// @version      1.0.5
+// @version      1.0.6
 // @description  扩展Coze聊天页
 // @author       RichieMay
 // @match        http*://*.coze.com/*
@@ -21,7 +21,7 @@
                   if (containers.length > 0) {
                       if (containers[0].getAttribute('extend') == null) {
                           containers[0].setAttribute('extend', true)
-                          containers[0].setAttribute('style', 'grid-template-columns:25fr 70fr 5fr;')
+                          containers[0].setAttribute('style', 'grid-template-columns:25fr 73fr 2fr;')
 
                           containers[0].children[0].style.position = 'fixed'
                           containers[0].children[0].style.visibility = 'hidden'

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ExtendCozeChat
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ExtendCoze.user.js
-// @version      1.0.6
+// @version      1.0.7
 // @description  扩展Coze聊天页
 // @author       RichieMay
 // @match        http*://*.coze.com/*
@@ -19,12 +19,17 @@
               if (node instanceof HTMLDivElement) {
                   let containers = node.getElementsByClassName('sidesheet-container')
                   if (containers.length > 0) {
-                      if (containers[0].getAttribute('extend') == null) {
-                          containers[0].setAttribute('extend', true)
-                          containers[0].setAttribute('style', 'grid-template-columns:25fr 73fr 2fr;')
+                      let sidesheet_container = containers[0]
+                      if (sidesheet_container.getAttribute('extend') == null) {
+                          sidesheet_container.setAttribute('extend', true)
+                          sidesheet_container.style.setProperty('grid-template-columns', '25fr 73fr 2fr')
 
-                          containers[0].children[0].style.position = 'fixed'
-                          containers[0].children[0].style.visibility = 'hidden'
+                          let left_div = sidesheet_container.children[0].children[0]
+                          left_div.removeChild(left_div.children[0])
+
+                          let left_bottom_div = sidesheet_container.children[0].children[1]
+                          left_bottom_div.removeChild(left_bottom_div.children[0])
+                          left_bottom_div.style.setProperty('display', 'flex')
                       }
 
                       observer.takeRecords()

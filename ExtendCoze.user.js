@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ExtendCozeChat
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ExtendCoze.user.js
-// @version      1.0.7
+// @version      1.0.8
 // @description  扩展Coze聊天页
 // @author       RichieMay
 // @match        http*://*.coze.com/*
@@ -13,27 +13,44 @@
 (function() {
     'use strict';
 
+    function patch_sidesheet_container(sidesheet_container) {
+        let left_div = sidesheet_container.children[0]
+        if (left_div.getAttribute('patched') != null) {
+            return true
+        }
+
+        if (left_div.childNodes.length >= 2)
+        {
+            let left_left_div = left_div.children[0]
+            if (left_left_div.children[0].textContent != 'Develop') {
+                return false
+            }
+
+            left_left_div.removeChild(left_left_div.children[0])
+
+            let left_right_div = left_div.children[1]
+            left_right_div.style.setProperty('display', 'flex')
+            left_right_div.removeChild(left_right_div.children[0])
+
+            sidesheet_container.style.setProperty('grid-template-columns', '25fr 74fr 1fr')
+
+            left_div.setAttribute('patched', true)
+            return true
+        }
+
+        return false
+    }
+
     new MutationObserver(function(mutationRecords, observer) {
       for (const mutationRecord of mutationRecords) {
           for (const node of mutationRecord.addedNodes) {
               if (node instanceof HTMLDivElement) {
                   let containers = node.getElementsByClassName('sidesheet-container')
-                  if (containers.length > 0) {
-                      let sidesheet_container = containers[0]
-                      if (sidesheet_container.getAttribute('extend') == null) {
-                          sidesheet_container.setAttribute('extend', true)
-                          sidesheet_container.style.setProperty('grid-template-columns', '25fr 74fr 1fr')
-
-                          let left_div = sidesheet_container.children[0].children[0]
-                          left_div.removeChild(left_div.children[0])
-
-                          let middle_div = sidesheet_container.children[0].children[1]
-                          middle_div.removeChild(middle_div.children[0])
-                          middle_div.style.setProperty('display', 'flex')
+                  if (containers.length > 0 || node.parentNode.className.includes('sidesheet-container')) {
+                      if (patch_sidesheet_container(containers.length > 0 ? containers[0] : node.parentNode)) {
+                          observer.takeRecords()
+                          return
                       }
-
-                      observer.takeRecords()
-                      return
                   }
               }
           }

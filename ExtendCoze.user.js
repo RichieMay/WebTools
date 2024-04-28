@@ -22,14 +22,14 @@
                       let sidesheet_container = containers[0]
                       if (sidesheet_container.getAttribute('extend') == null) {
                           sidesheet_container.setAttribute('extend', true)
-                          sidesheet_container.style.setProperty('grid-template-columns', '25fr 73fr 2fr')
+                          sidesheet_container.style.setProperty('grid-template-columns', '25fr 74fr 1fr')
 
                           let left_div = sidesheet_container.children[0].children[0]
                           left_div.removeChild(left_div.children[0])
 
-                          let left_bottom_div = sidesheet_container.children[0].children[1]
-                          left_bottom_div.removeChild(left_bottom_div.children[0])
-                          left_bottom_div.style.setProperty('display', 'flex')
+                          let middle_div = sidesheet_container.children[0].children[1]
+                          middle_div.removeChild(middle_div.children[0])
+                          middle_div.style.setProperty('display', 'flex')
                       }
 
                       observer.takeRecords()

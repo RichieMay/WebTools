@@ -15,7 +15,7 @@
 
     function patch_sidesheet_container(sidesheet_container) {
         let left_div = sidesheet_container.children[0]
-        if (left_div.getAttribute('patched') != null) {
+        if (left_div.getAttribute('patched')) {
             return true
         }
 

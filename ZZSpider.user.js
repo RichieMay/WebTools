@@ -12,63 +12,88 @@
 (function() {
     'use strict';
 
-    const global = {'queue': [], 'unique': [], 'pull': true};
-    const worker = new Worker(URL.createObjectURL(new Blob([`self.onmessage=(e)=>{setInterval(()=>{self.postMessage(null)},1000)}`],{type: 'application/javascript'})));
-    worker.onmessage = (e) => {
-        if (global.queue.length != 0) {
-            try {
-                global.pull = false;
-                parse_os_version(global.unique, global.queue.shift());
-            } catch{}
-        } else {
-            if (!global.pull) {
-                global.pull = true;
-                window.scrollTo(0, document.body.scrollHeight);
+    const methods = {refresh: () => { window.scrollTo(0, document.body.scrollHeight); }};
+    const worker = new Worker(URL.createObjectURL(new Blob([`
+            function add_to_favorites(good) {
+                fetch('https://app.zhuanzhuan.com/zz/transfer/addLoveInfo?infoId=' + good.id + '&metric=' + good.metric, {method: 'GET',credentials: 'include'});
             }
-        }
-    };
 
-    function add_to_favorites(id, metric) {
-        fetch('https://app.zhuanzhuan.com/zz/transfer/addLoveInfo?infoId=' + id + '&metric=' + metric, {method: 'GET',credentials: 'include'});
-    }
+            async function parse_os_version(unique, good) {
+                if (unique.includes(good.id)) {
+                    console.error('重复商品ID: ' + good.id + ', 标题: ' + good.title);
+                    return;
+                }
 
-    async function parse_os_version(unique, good) {
-        const id = good.getAttribute('zz-infoid')
-        if (id == null || unique.includes(id)) {
-            if (id != null) {
-                console.error('重复商品ID: ' + id + ', 标题: ' + good.getAttribute('zz-sortname'));
-            }
-            return;
-        }
-
-        unique.push(id)
-        const response = await fetch('https://app.zhuanzhuan.com/zzopen/waresshow/moreInfo?infoId=' + id, {method: 'GET',credentials: 'include'});
-        const result = await response.json();
-        for (const param of result.respData.report.params) {
-            if (param.key === '系统版本') {
-                if (/.+17\.0$/.test(param.value)) {
-                    console.warn('商品链接: https://m.zhuanzhuan.com/u/streamline_detail/new-goods-detail?infoId=' + id);
-                    add_to_favorites(id, good.getAttribute('data-metric'));
-                    break;
+                unique.push(good.id);
+                const response = await fetch('https://app.zhuanzhuan.com/zzopen/waresshow/moreInfo?infoId=' + good.id, {method: 'GET',credentials: 'include'});
+                const result = await response.json();
+                for (const param of result.respData.report.params) {
+                    if (param.key === '系统版本') {
+                        if (/.+17\.0$/.test(param.value)) {
+                            console.warn('商品链接: https://m.zhuanzhuan.com/u/streamline_detail/new-goods-detail?infoId=' + good.id);
+                            add_to_favorites(good.id, good.metric);
+                            break;
+                        }
+                    }
                 }
             }
-        }
-    }
+
+            const global = {queue:[],  unique:[], refresh: true};
+            const methods = {
+                start: () => {
+                    setInterval((cache) => {
+                        if (cache.queue.length != 0) {
+                            try {
+                                cache.refresh = false;
+                                parse_os_version(cache.unique, cache.queue.shift());
+                            } catch {}
+                        } else if (!cache.refresh) {
+                            cache.refresh = true;
+                            self.postMessage({method: 'refresh', args: []});
+                        }
+                    }, 1000, global);
+                },
+
+                append: (goods) => {
+                    global.queue.push(...goods);
+                }
+            };
+
+            self.onmessage = (e) => {
+                methods[e.data.method].apply(methods, e.data.args);
+            };
+
+        `],{type: 'application/javascript'})));
+
+    worker.onmessage = (e) => {
+        methods[e.data.method].apply(methods, e.data.args);
+    };
 
     function setup_goods_node(node)
     {
+        console.clear();
+        worker.postMessage({method: 'start', args: []});
+
         new MutationObserver(function(mutations) {
+            let goods = [];
             mutations.forEach(function(mutation) {
                 mutation.addedNodes.forEach(node => {
                     if (node.nodeType == Node.ELEMENT_NODE) {
-                        global.queue.push(node);
+                        try {
+                            if (node.hasAttribute('zz-infoid')) {
+                                goods.push({
+                                    id: node.getAttribute('zz-infoid'),
+                                    title: node.getAttribute('zz-sortname'),
+                                    metric: node.getAttribute('data-metric')
+                                });
+                            }
+                        } catch {}
                     }
                 })
             });
-        }).observe(node, {childList : true});
 
-        console.clear();
-        worker.postMessage(null);
+            worker.postMessage({method: 'append', args: [goods]});
+        }).observe(node, {childList : true});
     }
 
     new MutationObserver(function(mutations, observer) {

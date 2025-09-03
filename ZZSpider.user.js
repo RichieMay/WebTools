@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.3
+// @version      1.0.4
 // @description  转转商品爬虫
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -71,9 +71,6 @@
 
     function setup_goods_node(node)
     {
-        console.clear();
-        worker.postMessage({method: 'start', args: []});
-
         new MutationObserver(function(mutations) {
             worker.postMessage({
                 method: 'append',
@@ -89,6 +86,9 @@
                 ]
             });
         }).observe(node, {childList : true});
+
+        console.clear();
+        worker.postMessage({method: 'start', args: []});
     }
 
     new MutationObserver(function(mutations, observer) {

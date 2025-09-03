@@ -63,7 +63,7 @@
                 methods[e.data.method].apply(methods, e.data.args);
             };
 
-        `],{type: 'application/javascript'})));
+        `], {type: 'application/javascript'})));
 
     worker.onmessage = (e) => {
         methods[e.data.method].apply(methods, e.data.args);

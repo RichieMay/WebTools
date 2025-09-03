@@ -12,7 +12,7 @@
 (function() {
     'use strict';
 
-    const methods = {refresh: () => { window.scrollTo(0, document.body.scrollHeight); console.debug('spider refresh ...') }};
+    const methods = {refresh: () => { window.scrollTo(0, document.body.scrollHeight); console.debug('spider refresh ...'); }};
     const worker = new Worker(URL.createObjectURL(new Blob([`
             function add_to_favorites(good) {
                 fetch('https://app.zhuanzhuan.com/zz/transfer/addLoveInfo?infoId=' + good.id + '&metric=' + good.metric, {method: 'GET',credentials: 'include'});
@@ -53,12 +53,12 @@
                         }
                     }, 1000);
 
-                    console.debug('spider start ...')
+                    console.debug('spider start ...');
                 },
 
                 append: (goods) => {
                     global.queue.push(...goods);
-                    console.debug('spider append ...')
+                    console.debug('spider append ...');
                 }
             };
 
@@ -101,7 +101,7 @@
                     setup_goods_node(node.querySelector('div[zz-sectionid="111"]'));
                     observer.disconnect();
                     return;
-                } catch{}
+                } catch {}
             }
         }
     }).observe(document.getElementById('app'), {childList : true});

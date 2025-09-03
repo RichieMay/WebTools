@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.4
+// @version      1.0.5
 // @description  转转商品爬虫
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -12,7 +12,7 @@
 (function() {
     'use strict';
 
-    const methods = {refresh: () => { window.scrollTo(0, document.body.scrollHeight); }};
+    const methods = {refresh: () => { window.scrollTo(0, document.body.scrollHeight); console.debug('spider refresh ...') }};
     const worker = new Worker(URL.createObjectURL(new Blob([`
             function add_to_favorites(good) {
                 fetch('https://app.zhuanzhuan.com/zz/transfer/addLoveInfo?infoId=' + good.id + '&metric=' + good.metric, {method: 'GET',credentials: 'include'});
@@ -52,10 +52,13 @@
                             self.postMessage({method: 'refresh', args: []});
                         }
                     }, 1000);
+
+                    console.debug('spider start ...')
                 },
 
                 append: (goods) => {
                     global.queue.push(...goods);
+                    console.debug('spider append ...')
                 }
             };
 

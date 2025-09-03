@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.2
+// @version      1.0.3
 // @description  转转商品爬虫
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -41,17 +41,17 @@
             const global = {queue:[],  unique:[], refresh: true};
             const methods = {
                 start: () => {
-                    setInterval((cache) => {
-                        if (cache.queue.length != 0) {
+                    setInterval(() => {
+                        if (global.queue.length != 0) {
                             try {
-                                cache.refresh = false;
-                                parse_os_version(cache.unique, cache.queue.shift());
+                                global.refresh = false;
+                                parse_os_version(global.unique, global.queue.shift());
                             } catch {}
-                        } else if (!cache.refresh) {
-                            cache.refresh = true;
+                        } else if (!global.refresh) {
+                            global.refresh = true;
                             self.postMessage({method: 'refresh', args: []});
                         }
-                    }, 1000, global);
+                    }, 1000);
                 },
 
                 append: (goods) => {

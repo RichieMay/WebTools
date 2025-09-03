@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.1
+// @version      1.0.2
 // @description  转转商品爬虫
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -75,24 +75,19 @@
         worker.postMessage({method: 'start', args: []});
 
         new MutationObserver(function(mutations) {
-            let goods = [];
-            mutations.forEach(function(mutation) {
-                mutation.addedNodes.forEach(node => {
-                    if (node.nodeType == Node.ELEMENT_NODE) {
-                        try {
-                            if (node.hasAttribute('zz-infoid')) {
-                                goods.push({
-                                    id: node.getAttribute('zz-infoid'),
-                                    title: node.getAttribute('zz-sortname'),
-                                    metric: node.getAttribute('data-metric')
-                                });
-                            }
-                        } catch {}
-                    }
-                })
+            worker.postMessage({
+                method: 'append',
+                args: [
+                    Array.from(mutations)
+                    .flatMap(mutation => Array.from(mutation.addedNodes))
+                    .filter(node => node.nodeType === Node.ELEMENT_NODE && node.hasAttribute('zz-infoid'))
+                    .map(node => ({
+                        id: node.getAttribute('zz-infoid'),
+                        title: node.getAttribute('zz-sortname'),
+                        metric: node.getAttribute('data-metric')
+                    }))
+                ]
             });
-
-            worker.postMessage({method: 'append', args: [goods]});
         }).observe(node, {childList : true});
     }
 

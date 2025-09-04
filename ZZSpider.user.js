@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.6
+// @version      1.0.7
 // @description  转转商品爬虫
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -12,7 +12,7 @@
 (function() {
     'use strict';
 
-    const methods = {refresh: () => { console.debug('spider refresh ...'); window.scrollTo(0, document.body.scrollHeight); }};
+    const methods = {refresh: () => { console.debug(new Date().toLocaleString(), 'spider refresh ...'); window.scrollTo(0, document.body.scrollHeight); }};
     const worker = new Worker(URL.createObjectURL(new Blob([`
             function add_to_favorites(good) {
                 fetch('https://app.zhuanzhuan.com/zz/transfer/addLoveInfo?infoId=' + good.id + '&metric=' + good.metric, {method: 'GET',credentials: 'include'});
@@ -41,7 +41,7 @@
             const global = {queue:[],  unique:[], refresh: true};
             const methods = {
                 start: () => {
-                    console.debug('spider start ...');
+                    console.debug(new Date().toLocaleString(), 'spider start ...');
 
                     setInterval(() => {
                         if (global.queue.length != 0) {
@@ -57,7 +57,7 @@
                 },
 
                 update: (goods) => {
-                    console.debug('spider update ...', global.queue.length, goods.length);
+                    console.debug(new Date().toLocaleString(), 'spider update ...', global.queue.length, goods.length);
 
                     global.queue.push(...goods);
                 }

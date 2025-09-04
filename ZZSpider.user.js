@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.7
+// @version      1.0.8
 // @description  转转商品爬虫
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -31,14 +31,14 @@
                     if (param.key === '系统版本') {
                         if (/.+17\.0$/.test(param.value)) {
                             console.warn('商品链接: https://m.zhuanzhuan.com/u/streamline_detail/new-goods-detail?infoId=' + good.id);
-                            add_to_favorites(good.id, good.metric);
+                            add_to_favorites(good);
                             break;
                         }
                     }
                 }
             }
 
-            const global = {queue:[],  unique:[], refresh: true};
+            const global = {queue:[],  unique:[], refresh: 1};
             const methods = {
                 start: () => {
                     console.debug(new Date().toLocaleString(), 'spider start ...');
@@ -46,12 +46,15 @@
                     setInterval(() => {
                         if (global.queue.length != 0) {
                             try {
-                                global.refresh = false;
+                                global.refresh = 0;
                                 parse_os_version(global.unique, global.queue.shift());
                             } catch {}
-                        } else if (!global.refresh) {
-                            global.refresh = true;
+                        } else if (global.refresh === 0) {
+                            global.refresh = 1;
                             self.postMessage({method: 'refresh', args: []});
+                        } else if (global.refresh === 1) {
+                            global.refresh = -1;
+                            console.debug(new Date().toLocaleString(), 'spider is waiting for update ...');
                         }
                     }, 1000);
                 },

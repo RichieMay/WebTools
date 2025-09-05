@@ -93,7 +93,7 @@
                     console.debug(new Date().toLocaleString(), 'spider sync ...');
 
                     entry.body = Object.fromEntries(new URLSearchParams(entry.body));
-                    entry.body.param = jSON.parse(entry.body.param);
+                    entry.body.param = JSON.parse(entry.body.param);
                     if (entry.body.param.pageIndex == 1) {
                         global.queue = [];
                         global.entry = entry;

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.10
+// @version      1.0.11
 // @description  转转商品爬虫
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -68,7 +68,7 @@
                                 if (global.queue.length != 0) {
                                     parse_os_version(global.unique, global.queue.shift()).then(good => {global.complete = true;});
                                 } else {
-                                    load_more_goods(global.entry).then((goods != null && goods.length == 0) => {
+                                    load_more_goods(global.entry).then(goods => {
                                         global.complete = true;
                                         if (!goods) {
                                             return;

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.13
+// @version      1.0.14
 // @description  转转商品爬虫
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -11,6 +11,21 @@
 
 (function() {
     'use strict';
+
+    const methods = {
+        save: (goods) => {
+            localStorage.setItem('goods', JSON.stringify(goods));
+            console.debug(new Date().toLocaleString(), 'spider save ...');
+        },
+
+        load: () => {
+            try {
+                return JSON.parse(localStorage.getItem('goods')) || [];
+            } finally {
+                console.debug(new Date().toLocaleString(), 'spider load ...');
+            }
+        }
+    };
 
     window.backend = new Worker(URL.createObjectURL(new Blob([`
             function add_to_favorites(good) {
@@ -54,12 +69,10 @@
 
             const global = {queue: [], unique: [], entry: null, timer: -1, complete: true};
             const methods = {
-                start: () => {
+                start: (caches) => {
                     if (global.timer != -1) { return; }
 
-                    console.clear();
-                    console.debug(new Date().toLocaleString(), 'spider start ...');
-
+                    global.unique = caches;
                     global.timer = setInterval(() => {
                         if (!global.complete) { return; }
 
@@ -70,18 +83,15 @@
                                 return;
                             }
 
-                            if (!global.entry) {
-                                global.complete = true;
-                                console.debug(new Date().toLocaleString(), 'spider idle ...');
-                                return;
-                            }
-
                             load_more_goods(global.entry).then(goods => {
                                     global.complete = true;
                                     if (!goods) { return; }
 
                                     if (goods.length == 0) {
                                         global.entry = null;
+                                        self.postMessage({method: 'save', args: [global.unique]});
+
+                                        console.debug(new Date().toLocaleString(), 'spider idle ...');
                                     } else {
                                         global.queue.push(...goods);
                                     }
@@ -90,25 +100,29 @@
                             global.complete = true;
                         }
                     }, 1000);
+
+                    console.clear();
+                    console.debug(new Date().toLocaleString(), 'spider start ...');
                 },
 
                 stop: () => {
                     if (global.timer == -1) { return; }
-                    console.debug(new Date().toLocaleString(), 'spider stop ...');
-
                     clearInterval(global.timer);
                     global.timer = -1;
+
+                    console.debug(new Date().toLocaleString(), 'spider stop ...');
                 },
 
                 sync: (entry) => {
-                    console.debug(new Date().toLocaleString(), 'spider sync ...');
-
                     entry.body = Object.fromEntries(new URLSearchParams(entry.body));
                     entry.body.param = JSON.parse(entry.body.param);
                     if (entry.body.param.pageIndex == 1) {
                         global.queue = [];
                         global.entry = entry;
                         global.entry.body.param.pageIndex = 0;
+                        self.postMessage({method: 'save', args: [global.unique]});
+              
+                        console.debug(new Date().toLocaleString(), 'spider sync ...');
                     }
                 }
             };
@@ -117,6 +131,10 @@
                 methods[e.data.method].apply(methods, 'args' in e.data ? e.data.args : []);
             };
         `], {type: 'application/javascript'})));
+
+    window.backend.onmessage = (e) => {
+        methods[e.data.method].apply(methods, 'args' in e.data ? e.data.args : []);
+    };
 
     XMLHttpRequest.prototype._send = XMLHttpRequest.prototype.send;
     XMLHttpRequest.prototype.send = function(...args) {
@@ -127,5 +145,5 @@
         return this._send(...args);
     };
 
-    window.backend.postMessage({method: 'start'});
+    window.backend.postMessage({method: 'start', args: [methods.load()]});
 })();

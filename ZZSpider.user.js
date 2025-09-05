@@ -50,7 +50,7 @@
                         return Array.from(body.respData.datas).map(good => {
                             return {id: good.infoId, title: good.title, metric: good.metricValue};
                         });
-                    }).catch(e => []);
+                    }).catch(e => null);
             }
 
             const global = {queue:[], unique:[], entry: {}, timer:-1, complete: true};
@@ -68,9 +68,17 @@
                                 if (global.queue.length != 0) {
                                     parse_os_version(global.unique, global.queue.shift()).then(good => {global.complete = true;});
                                 } else {
-                                    load_more_goods(global.entry).then(goods => {
+                                    load_more_goods(global.entry).then((goods != null && goods.length == 0) => {
                                         global.complete = true;
+                                        if (!goods) {
+                                            return;
+                                        }
+
                                         global.queue.push(...goods);
+                                        if (goods.length == 0) {
+                                            global.entry = {};
+                                        }
+
                                     });
                                 }
                             } catch {
@@ -93,10 +101,11 @@
 
                     const data = entry.body.split('=');
                     entry.body = {[data[0]]: JSON.parse(decodeURIComponent(data[1]))};
-                    entry.body.param.pageIndex -= 1;
-
-                    global.queue = [];
-                    global.entry = entry;
+                    if (entry.body.param.pageIndex == 1) {
+                        global.queue = [];
+                        global.entry = entry;
+                        global.entry.body.param.pageIndex = 0;
+                    }
                 }
             };
 

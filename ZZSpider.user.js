@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.11
+// @version      1.0.12
 // @description  转转商品爬虫
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -42,8 +42,7 @@
                 entry.body.param.rstmark = Date.now();
                 entry.request_headers.zzreqt = Date.now();
 
-                const formData = new URLSearchParams();
-                formData.append('param', JSON.stringify(entry.body.param));
+                const formData = new URLSearchParams({param: JSON.stringify(entry.body.param)});
                 return fetch(entry.url, {method: entry.method, headers: entry.request_headers, body: formData, credentials: 'include'})
                     .then(res => res.json())
                     .then(body => {
@@ -57,7 +56,6 @@
             const methods = {
                 start: () => {
                     if (global.timer != -1) { return; };
-
                     console.clear();
                     console.debug(new Date().toLocaleString(), 'spider start ...');
 
@@ -99,8 +97,8 @@
                 sync: (entry) => {
                     console.debug(new Date().toLocaleString(), 'spider sync ...');
 
-                    const data = entry.body.split('=');
-                    entry.body = {[data[0]]: JSON.parse(decodeURIComponent(data[1]))};
+                    entry.body = Object.fromEntries(new URLSearchParams(entry.body));
+                    entry.body.param = jSON.parse(entry.body.param);
                     if (entry.body.param.pageIndex == 1) {
                         global.queue = [];
                         global.entry = entry;

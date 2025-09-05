@@ -68,15 +68,10 @@
                                 } else {
                                     load_more_goods(global.entry).then(goods => {
                                         global.complete = true;
-                                        if (!goods) {
-                                            return;
-                                        }
+                                        if (!goods) { return; }
 
                                         global.queue.push(...goods);
-                                        if (goods.length == 0) {
-                                            global.entry = {};
-                                        }
-
+                                        if (goods.length == 0) { global.entry = {};}
                                     });
                                 }
                             } catch {

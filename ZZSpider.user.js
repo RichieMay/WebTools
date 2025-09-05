@@ -57,8 +57,6 @@
             const methods = {
                 start: () => {
                     if (global.timer != -1) { return; };
-
-                    console.clear();
                     console.debug(new Date().toLocaleString(), 'spider start ...');
 
                     global.timer = setInterval(() => {
@@ -102,6 +100,7 @@
                     const data = entry.body.split('=');
                     entry.body = {[data[0]]: JSON.parse(decodeURIComponent(data[1]))};
                     if (entry.body.param.pageIndex == 1) {
+                        console.clear();
                         global.queue = [];
                         global.entry = entry;
                         global.entry.body.param.pageIndex = 0;

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.14
+// @version      1.0.15
 // @description  转转商品爬虫
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -18,7 +18,9 @@
             console.debug(new Date().toLocaleString(), 'spider save ...');
         },
 
-        load: () => JSON.parse(localStorage.getItem('goods')) || [];
+        load: () => {
+            return JSON.parse(localStorage.getItem('goods')) || [];
+        }
     };
 
     window.backend = new Worker(URL.createObjectURL(new Blob([`

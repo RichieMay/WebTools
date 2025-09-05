@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.12
+// @version      1.0.13
 // @description  转转商品爬虫
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -52,31 +52,42 @@
                     }).catch(e => null);
             }
 
-            const global = {queue:[], unique:[], entry: {}, timer:-1, complete: true};
+            const global = {queue: [], unique: [], entry: null, timer: -1, complete: true};
             const methods = {
                 start: () => {
-                    if (global.timer != -1) { return; };
+                    if (global.timer != -1) { return; }
+
                     console.clear();
                     console.debug(new Date().toLocaleString(), 'spider start ...');
 
                     global.timer = setInterval(() => {
-                        if (global.complete) {
-                            try {
-                                global.complete = false;
-                                if (global.queue.length != 0) {
-                                    parse_os_version(global.unique, global.queue.shift()).then(good => {global.complete = true;});
-                                } else {
-                                    load_more_goods(global.entry).then(goods => {
-                                        global.complete = true;
-                                        if (!goods) { return; }
+                        if (!global.complete) { return; }
 
-                                        global.queue.push(...goods);
-                                        if (goods.length == 0) { global.entry = {};}
-                                    });
-                                }
-                            } catch {
-                                global.complete = true;
+                        try {
+                            global.complete = false;
+                            if (global.queue.length != 0) {
+                                parse_os_version(global.unique, global.queue.shift()).then(good => {global.complete = true;});
+                                return;
                             }
+
+                            if (!global.entry) {
+                                global.complete = true;
+                                console.debug(new Date().toLocaleString(), 'spider idle ...');
+                                return;
+                            }
+
+                            load_more_goods(global.entry).then(goods => {
+                                    global.complete = true;
+                                    if (!goods) { return; }
+
+                                    if (goods.length == 0) {
+                                        global.entry = null;
+                                    } else {
+                                        global.queue.push(...goods);
+                                    }
+                                });
+                        } catch {
+                            global.complete = true;
                         }
                     }, 1000);
                 },

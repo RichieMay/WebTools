@@ -18,13 +18,7 @@
             console.debug(new Date().toLocaleString(), 'spider save ...');
         },
 
-        load: () => {
-            try {
-                return JSON.parse(localStorage.getItem('goods')) || [];
-            } finally {
-                console.debug(new Date().toLocaleString(), 'spider load ...');
-            }
-        }
+        load: () => JSON.parse(localStorage.getItem('goods')) || [];
     };
 
     window.backend = new Worker(URL.createObjectURL(new Blob([`

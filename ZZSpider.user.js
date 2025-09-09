@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.16
+// @version      1.0.17
 // @description  转转商品爬虫
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -28,7 +28,7 @@
                 fetch('https://app.zhuanzhuan.com/zz/transfer/addLoveInfo?infoId=' + good.id + '&metric=' + good.metric, {method: 'GET', credentials: 'include'});
             }
 
-            function parse_os_version(unique, good) {
+            function parse_os_version(good) {
                 return fetch('https://app.zhuanzhuan.com/zzopen/waresshow/moreInfo?infoId=' + good.id, {method: 'GET', credentials: 'include'})
                     .then(res => res.json())
                     .then(body => {
@@ -116,7 +116,7 @@
                         global.entry = entry;
                         global.entry.body.param.pageIndex = 0;
                         self.postMessage({method: 'save', args: [global.unique]});
-              
+
                         console.debug(new Date().toLocaleString(), 'spider sync ...');
                     }
                 }

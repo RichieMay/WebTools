@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.24
+// @version      1.0.25
 // @description  转转搜索页入口: https://m.zhuanzhuan.com/u/b2c_list_page/list?keyword=iPhone15Pro
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -29,6 +29,7 @@
                 window.injected = true;
 
                 const button = document.createElement("button");
+                button.type = "button";
                 button.value = "start";
                 button.textContent = "开始";
                 button.style.cssText = "position: fixed;top: 58px;right: 2%;z-index: 100;font: caption;font-weight: bold;background-color: blanchedalmond;";

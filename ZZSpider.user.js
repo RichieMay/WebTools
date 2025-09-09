@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.18
-// @description  转转商品爬虫
+// @version      1.0.19
+// @description  转转搜索页入口: https://m.zhuanzhuan.com/u/b2c_list_page/list?keyword=iPhone15Pro
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
 // @grant        none
@@ -14,15 +14,43 @@
 
     const methods = {
         save: (goods) => {
-            localStorage.setItem('goods', JSON.stringify(goods));
-            console.debug(new Date().toLocaleString(), 'spider save ...');
+            if (Array.isArray(goods) && goods.length > 0) {
+                localStorage.setItem('goods', JSON.stringify(goods));
+                console.debug(new Date().toLocaleString(), 'spider save ...');
+            }
         },
 
         load: () => {
             return JSON.parse(localStorage.getItem('goods')) || [];
+        },
+
+        inject: () => {
+            if (!window.injected) {
+                window.injected = true;
+
+                const button = document.createElement("button");
+                button.id = "inject";
+                button.value = "start";
+                button.textContent = "开始";
+                button.style.cssText = "position: fixed;top: 58px;right: 2%;z-index: 100;font: caption;font-weight: bold;background-color: blanchedalmond;";
+                button.addEventListener("click", (event) => {
+                    if (event.target.value == "stop") {
+                        event.target.value = "start";
+                        event.target.textContent = "开始";
+                        window.backend.postMessage({method: 'stop'});
+                    } else {
+                        event.target.value = "stop";
+                        event.target.textContent = "停止";
+                        window.backend.postMessage({method: 'start', args: [methods.load()]});
+                    }
+                });
+
+                document.body.appendChild(button);
+            }
         }
     };
 
+    window.injected = false;
     window.backend = new Worker(URL.createObjectURL(new Blob([`
             function add_to_favorites(good) {
                 fetch('https://app.zhuanzhuan.com/zz/transfer/addLoveInfo?infoId=' + good.id + '&metric=' + good.metric, {method: 'GET', credentials: 'include'});
@@ -61,7 +89,10 @@
                 start: (caches) => {
                     if (global.timer != -1) { return; }
 
-                    global.unique = caches;
+                    if (Array.isArray(caches) && caches.length > 0) {
+                       global.unique.push(...caches);
+                    }
+
                     global.timer = setInterval(() => {
                         if (!global.complete) { return; }
 
@@ -134,12 +165,11 @@
     XMLHttpRequest.prototype._send = XMLHttpRequest.prototype.send;
     XMLHttpRequest.prototype.send = function(content) {
         if (this.__sentry_xhr_v3__.url.includes('/zzopen/ypmall/listData')) {
+            methods.inject();
             this.__sentry_xhr_v3__.body = content;
             window.backend.postMessage({method: 'sync', args: [this.__sentry_xhr_v3__]});
         }
 
         return this._send(content);
     };
-
-    window.backend.postMessage({method: 'start', args: [methods.load()]});
 })();

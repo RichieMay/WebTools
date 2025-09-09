@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.23
+// @version      1.0.24
 // @description  转转搜索页入口: https://m.zhuanzhuan.com/u/b2c_list_page/list?keyword=iPhone15Pro
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -89,7 +89,7 @@
                     if (global.timer != -1) { return; }
 
                     if (Array.isArray(caches) && caches.length > 0) {
-                       global.unique.push(...caches);
+                       global.unique = caches;
                     }
 
                     global.timer = setInterval(() => {

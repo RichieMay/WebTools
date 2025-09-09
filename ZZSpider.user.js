@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.17
+// @version      1.0.18
 // @description  转转商品爬虫
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -132,12 +132,13 @@
     };
 
     XMLHttpRequest.prototype._send = XMLHttpRequest.prototype.send;
-    XMLHttpRequest.prototype.send = function(...args) {
+    XMLHttpRequest.prototype.send = function(content) {
         if (this.__sentry_xhr_v3__.url.includes('/zzopen/ypmall/listData')) {
+            this.__sentry_xhr_v3__.body = content;
             window.backend.postMessage({method: 'sync', args: [this.__sentry_xhr_v3__]});
         }
 
-        return this._send(...args);
+        return this._send(content);
     };
 
     window.backend.postMessage({method: 'start', args: [methods.load()]});

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.19
+// @version      1.0.20
 // @description  转转搜索页入口: https://m.zhuanzhuan.com/u/b2c_list_page/list?keyword=iPhone15Pro
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -164,12 +164,14 @@
 
     XMLHttpRequest.prototype._send = XMLHttpRequest.prototype.send;
     XMLHttpRequest.prototype.send = function(content) {
-        if (this.__sentry_xhr_v3__.url.includes('/zzopen/ypmall/listData')) {
-            methods.inject();
-            this.__sentry_xhr_v3__.body = content;
-            window.backend.postMessage({method: 'sync', args: [this.__sentry_xhr_v3__]});
+        try {
+            if (this.__sentry_xhr_v3__.url.includes('/zzopen/ypmall/listData')) {
+                methods.inject();
+                this.__sentry_xhr_v3__.body = content;
+                window.backend.postMessage({method: 'sync', args: [this.__sentry_xhr_v3__]});
+            }
+        } finally {
+            return this._send(content);
         }
-
-        return this._send(content);
     };
 })();

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         转转商品爬虫
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/ZZSpider.user.js
-// @version      1.0.15
+// @version      1.0.16
 // @description  转转商品爬虫
 // @author       RichieMay
 // @match        https://m.zhuanzhuan.com/*
@@ -29,12 +29,6 @@
             }
 
             function parse_os_version(unique, good) {
-                if (unique.includes(good.id)) {
-                    console.error('重复商品ID: ' + good.id + ', 标题: ' + good.title);
-                    return;
-                }
-
-                unique.push(good.id);
                 return fetch('https://app.zhuanzhuan.com/zzopen/waresshow/moreInfo?infoId=' + good.id, {method: 'GET', credentials: 'include'})
                     .then(res => res.json())
                     .then(body => {
@@ -52,7 +46,6 @@
                 entry.body.param.pageIndex += 1;
                 entry.body.param.rstmark = Date.now();
                 entry.request_headers.zzreqt = Date.now();
-
                 const formData = new URLSearchParams({param: JSON.stringify(entry.body.param)});
                 return fetch(entry.url, {method: entry.method, headers: entry.request_headers, body: formData, credentials: 'include'})
                     .then(res => res.json())
@@ -74,9 +67,15 @@
 
                         try {
                             global.complete = false;
-                            if (global.queue.length != 0) {
-                                parse_os_version(global.unique, global.queue.shift()).then(good => {global.complete = true;});
-                                return;
+                            while (global.queue.length != 0) {
+                                const good = global.queue.shift();
+                                if (!global.unique.includes(good.id)) {
+                                    parse_os_version(good).then(good => {global.complete = true;});
+                                    global.unique.push(good.id);
+                                    return;
+                                }
+
+                                console.error('重复商品ID: ' + good.id + ', 标题: ' + good.title);
                             }
 
                             load_more_goods(global.entry).then(goods => {

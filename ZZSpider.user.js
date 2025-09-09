@@ -29,7 +29,6 @@
                 window.injected = true;
 
                 const button = document.createElement("button");
-                button.id = "inject";
                 button.value = "start";
                 button.textContent = "开始";
                 button.style.cssText = "position: fixed;top: 58px;right: 2%;z-index: 100;font: caption;font-weight: bold;background-color: blanchedalmond;";

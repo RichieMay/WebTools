@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         转转/爱回收爬虫
-// @version      1.0.30
+// @version      1.0.31
 // @author       RichieMay
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/SecondHandSpider.user.js
 // @description  转转/爱回收二手商品爬取
@@ -19,18 +19,19 @@
     const FrontInterfaces = {
         injected: false,
 
-        load: (platform) => {
-            return JSON.parse(localStorage.getItem(platform + '_goods')) || [];
+        load: () => {
+            return JSON.parse(localStorage.getItem('goods')) || [];
         },
 
-        save: (platform, goods) => {
-            if (Array.isArray(goods) && goods.length > 0) {
-                localStorage.setItem(platform + '_goods', JSON.stringify(goods));
+        save: (caches) => {
+            if (Array.isArray(caches) && caches.length > 0) {
+                localStorage.setItem('goods', JSON.stringify(caches));
+
                 console.debug(new Date().toLocaleString(), 'spider save ...');
             }
         },
 
-        inject(platform) {
+        inject() {
             if (!this.injected) {
                 this.injected = true;
 
@@ -47,7 +48,7 @@
                     } else {
                         event.target.value = "stop";
                         event.target.textContent = "停止";
-                        window.backend.postMessage({method: 'start', args: [platform, this.load(platform)]});
+                        window.backend.postMessage({method: 'start', args: [this.load()]});
                     }
                 });
 
@@ -58,8 +59,7 @@
 
     window.backend = new Worker(URL.createObjectURL(new Blob([`
             class Platform {
-                constructor(name, entry) {
-                    this.name = name
+                constructor(entry) {
                     this.entry = entry
                     this.completed = true
                 }
@@ -74,7 +74,7 @@
             };
 
             class ZZ_Platform extends Platform {
-                constructor(name, entry) {
+                constructor(entry) {
                     entry.body = Object.fromEntries(new URLSearchParams(entry.body));
                     entry.body.param = JSON.parse(entry.body.param);
                     if (entry.body.param.pageIndex !== 1) {
@@ -82,7 +82,7 @@
                     }
 
                     entry.body.param.pageIndex -= 1
-                    super(name, entry)
+                    super(entry)
                 }
 
                 load_more_goods() {
@@ -109,7 +109,7 @@
                 }
 
                 add_to_favorites(good) {
-                    console.warn('收藏商品: https://m.zhuanzhuan.com/u/streamline_detail/new-goods-detail?infoId=' + good.id)
+                    console.warn('收藏商品: https://m.zhuanzhuan.com/u/streamline_detail/new-goods-detail?infoId=' + good.id);
 
                     this.completed = false;
                     return fetch('https://app.zhuanzhuan.com/zz/transfer/addLoveInfo?infoId=' + good.id + '&metric=' + good.metric, {method: 'GET', credentials: 'include'})
@@ -119,14 +119,14 @@
             };
 
             class AHS_Platform extends Platform {
-                constructor(name, entry) {
+                constructor(entry) {
                     entry.body = JSON.parse(entry.body);
                     if (entry.body.pageIndex !== 0) {
                         throw "must be initialized with the first page (pageIndex = 0)"
                     }
 
                     entry.body.pageIndex -= 1
-                    super(name, entry)
+                    super(entry)
                 }
 
                 load_more_goods() {
@@ -167,7 +167,7 @@
                 duplicates: [],
                 good_queues: [],
 
-                start(platform, caches) {
+                start(caches) {
                     if (this.worker != -1) { return; }
 
                     if (Array.isArray(caches) && caches.length > 0) {
@@ -196,8 +196,8 @@
                             if (goods.length) {
                                 this.good_queues.push(...goods);
                             } else {
-                                self.postMessage({method: 'save', args: [this.platform.name, this.duplicates]});
                                 this.platform = null;
+                                self.postMessage({method: 'save', args: [this.duplicates]});
 
                                 console.debug(new Date().toLocaleString(), 'spider idle ...');
                             }
@@ -212,31 +212,27 @@
                     if (this.worker == -1) { return; }
 
                     clearInterval(this.worker);
-
                     this.worker = -1;
-                    self.postMessage({method: 'save', args: [this.platform.name, this.duplicates]});
+                    self.postMessage({method: 'save', args: [this.duplicates]});
 
                     console.debug(new Date().toLocaleString(), 'spider stop ...');
                 },
 
                 sync(platform, entry) {
                     try {
-                        this.platform = this.make_platform(platform, entry)
+                        switch (platform) {
+                            case "zhuanzhuan":
+                                this.platform = new ZZ_Platform(entry)
+                                break
+                            case "aihuishou":
+                                this.platform = new AHS_Platform(entry)
+                                break
+                            default:
+                                throw "unsupported platform: " + name
+                        }
 
                         console.debug(new Date().toLocaleString(), 'spider sync ...')
-                    }
-                    catch {}
-                },
-
-                make_platform: (name, entry) => {
-                    switch (name) {
-                        case "zhuanzhuan":
-                            return new ZZ_Platform(name, entry)
-                        case "aihuishou":
-                            return new AHS_Platform(name, entry)
-                        default:
-                            throw "unsupported platform: " + name
-                    }
+                    } catch {}
                 }
             };
 

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         转转/爱回收爬虫
-// @version      1.0.29
+// @version      1.0.30
 // @author       RichieMay
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/SecondHandSpider.user.js
 // @description  转转/爱回收二手商品爬取
@@ -109,6 +109,8 @@
                 }
 
                 add_to_favorites(good) {
+                    console.warn('收藏商品: https://m.zhuanzhuan.com/u/streamline_detail/new-goods-detail?infoId=' + good.id)
+
                     this.completed = false;
                     return fetch('https://app.zhuanzhuan.com/zz/transfer/addLoveInfo?infoId=' + good.id + '&metric=' + good.metric, {method: 'GET', credentials: 'include'})
                         .catch(e => null)
@@ -149,6 +151,8 @@
                 }
 
                 add_to_favorites(good) {
+                    console.warn('收藏商品: https://m.aihuishou.com/n/ofn/strict-selected/product/detail?saleGoodsNo=' + good.id)
+
                     this.completed = false;
                     return fetch('https://dubai.aihuishou.com/ahs-yanxuan-service/collect/save', {method: 'POST', body: JSON.stringify({"type":1,"itemNo": good.id}), credentials: 'include'})
                         .catch(e => null)
@@ -180,13 +184,9 @@
                                     this.duplicates.push(good.id);
                                     if (matched) {
                                         this.platform.add_to_favorites(good);
-
-                                        console.warn('已收藏商品ID:' + good.id);
                                     }
                                 });
                             }
-
-                            console.error('重复商品ID: ' + good.id + ', 标题: ' + good.title);
                         }
 
                         this.platform.load_more_goods().then(goods => {

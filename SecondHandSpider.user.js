@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         转转/爱回收爬虫
-// @version      1.0.28
+// @version      1.0.29
 // @author       RichieMay
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/SecondHandSpider.user.js
 // @description  转转/爱回收二手商品爬取
@@ -195,8 +195,8 @@
                             if (goods.length) {
                                 this.good_queues.push(...goods);
                             } else {
+                                self.postMessage({method: 'save', args: [this.platform.name, this.duplicates]});
                                 this.platform = null;
-                                self.postMessage({method: 'save', args: [platform, this.duplicates]});
 
                                 console.debug(new Date().toLocaleString(), 'spider idle ...');
                             }

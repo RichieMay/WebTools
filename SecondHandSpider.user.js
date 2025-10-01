@@ -143,7 +143,7 @@
                     this.completed = false;
                     return fetch('https://dubai.aihuishou.com/ahs-yanxuan-service/products/goods-tag-param?saleGoodsNo=' + good.id, {method: 'GET', credentials: 'include'})
                         .then(res => res.json())
-                        .then(body => ({matched: !!Array.from(body.data.machineConditionList).find(param => param.name === '系统版本' && /.+17\.0$/.test(param.value))}))
+                        .then(body => ({matched: !!Array.from(body.data.machineConditionList).find(param => param.name === '系统版本' && /17\.0$/.test(param.value))}))
                         .catch(e => ({matched: null}))
                         .finally(() => this.completed = true)
                 }

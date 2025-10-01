@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         转转/爱回收爬虫
-// @version      1.0.27
+// @version      1.0.28
 // @author       RichieMay
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/SecondHandSpider.user.js
 // @description  转转/爱回收二手商品爬取
@@ -91,7 +91,7 @@
                     this.entry.request_headers.zzreqt = Date.now();
                     const formData = new URLSearchParams({param: JSON.stringify(this.entry.body.param)});
 
-                    this.completed = true;
+                    this.completed = false;
                     return fetch(this.entry.url, {method: this.entry.method, headers: this.entry.request_headers, body: formData, credentials: 'include'})
                         .then(res => res.json())
                         .then(body => Array.from(body.respData.datas).map(good => ({id: good.infoId, title: good.title, metric: good.metricValue})))
@@ -100,7 +100,7 @@
                 }
 
                 parse_os_version(good) {
-                    this.completed = true;
+                    this.completed = false;
                     return fetch('https://app.zhuanzhuan.com/zzopen/waresshow/moreInfo?infoId=' + good.id, {method: 'GET', credentials: 'include'})
                         .then(res => res.json())
                         .then(body => ({matched: !!Array.from(body.respData.report.params).find(param => param.key === '系统版本' && /.+17\.0$/.test(param.value))}))
@@ -109,7 +109,7 @@
                 }
 
                 add_to_favorites(good) {
-                    this.completed = true;
+                    this.completed = false;
                     return fetch('https://app.zhuanzhuan.com/zz/transfer/addLoveInfo?infoId=' + good.id + '&metric=' + good.metric, {method: 'GET', credentials: 'include'})
                         .catch(e => null)
                         .finally(() => this.completed = true)
@@ -131,7 +131,7 @@
                     this.entry.body.pageIndex += 1;
                     this.entry.request_headers["Ahs-Timestamp"] = Math.floor(Date.now() / 1000);
 
-                    this.completed = true;
+                    this.completed = false;
                     return fetch(this.entry.url, {method: this.entry.method, headers: this.entry.request_headers, body: JSON.stringify(this.entry.body), credentials: 'include'})
                         .then(res => res.json())
                         .then(body => Array.from(body.data).map(good => ({id: good.saleGoodsNo, title: good.name, metric: null})))
@@ -140,7 +140,7 @@
                 }
 
                 parse_os_version(good) {
-                    this.completed = true;
+                    this.completed = false;
                     return fetch('https://dubai.aihuishou.com/ahs-yanxuan-service/products/goods-tag-param?saleGoodsNo=' + good.id, {method: 'GET', credentials: 'include'})
                         .then(res => res.json())
                         .then(body => ({matched: !!Array.from(body.data.machineConditionList).find(param => param.name === '系统版本' && /.+17\.0$/.test(param.value))}))
@@ -149,7 +149,10 @@
                 }
 
                 add_to_favorites(good) {
+                    this.completed = false;
                     return fetch('https://dubai.aihuishou.com/ahs-yanxuan-service/collect/save', {method: 'POST', body: JSON.stringify({"type":1,"itemNo": good.id}), credentials: 'include'})
+                        .catch(e => null)
+                        .finally(() => this.completed = true)
                 }
             };
 

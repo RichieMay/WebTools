@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         转转/爱回收爬虫
-// @version      1.0.26
+// @version      1.0.27
 // @author       RichieMay
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/SecondHandSpider.user.js
 // @description  转转/爱回收二手商品爬取
@@ -141,7 +141,7 @@
 
                 parse_os_version(good) {
                     this.completed = true;
-                    return fetch('https://dubai.aihuishou.com/ahs-yanxuan-service/products/goods-tag-param?saleGoodsNo=' + good.id, body: {method: 'GET', credentials: 'include'})
+                    return fetch('https://dubai.aihuishou.com/ahs-yanxuan-service/products/goods-tag-param?saleGoodsNo=' + good.id, {method: 'GET', credentials: 'include'})
                         .then(res => res.json())
                         .then(body => ({matched: !!Array.from(body.data.machineConditionList).find(param => param.name === '系统版本' && /.+17\.0$/.test(param.value))}))
                         .catch(e => ({matched: null}))
@@ -149,7 +149,7 @@
                 }
 
                 add_to_favorites(good) {
-                    return fetch('https://dubai.aihuishou.com/ahs-yanxuan-service/collect/save', {method: 'POST', JSON.stringify({"type":1,"itemNo": good.id}), credentials: 'include'})
+                    return fetch('https://dubai.aihuishou.com/ahs-yanxuan-service/collect/save', {method: 'POST', body: JSON.stringify({"type":1,"itemNo": good.id}), credentials: 'include'})
                 }
             };
 

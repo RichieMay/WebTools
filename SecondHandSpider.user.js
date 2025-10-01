@@ -151,10 +151,11 @@
                 }
 
                 add_to_favorites(good) {
-                    console.warn('收藏商品: https://m.aihuishou.com/n/ofn/strict-selected/product/detail?saleGoodsNo=' + good.id)
+                    console.warn('收藏商品: https://m.aihuishou.com/n/ofn/strict-selected/product/detail?saleGoodsNo=' + good.id);
 
                     this.completed = false;
-                    return fetch('https://dubai.aihuishou.com/ahs-yanxuan-service/collect/save', {method: 'POST', body: JSON.stringify({"type":1,"itemNo": good.id}), credentials: 'include'})
+                    this.entry.request_headers["Ahs-Timestamp"] = Math.floor(Date.now() / 1000);
+                    return fetch('https://dubai.aihuishou.com/ahs-yanxuan-service/collect/save', {method: 'POST', headers: this.entry.request_headers, body: JSON.stringify({"type":1,"itemNo": good.id}), credentials: 'include'})
                         .catch(e => null)
                         .finally(() => this.completed = true)
                 }

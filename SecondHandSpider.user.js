@@ -49,7 +49,7 @@
             load_more_goods() {
                 this.entry.body.param.pageIndex += 1;
                 this.entry.body.param.rstmark = Date.now();
-                this.entry.request_headers.zzreqt = Date.now();
+                this.entry.request_headers["zzreqt"] = Date.now();
                 const formData = new URLSearchParams({
                     param: JSON.stringify(this.entry.body.param)
                 });
@@ -296,9 +296,9 @@
         try {
             let platform;
             if (this.__sentry_xhr_v3__.url.includes('/zzopen/ypmall/listData')) {
-                platform='zhuanzhuan'
+                platform='zhuanzhuan';
             } else if (this.__sentry_xhr_v3__.url.includes('ahs-yanxuan-service/products/search-goods-v2')) {
-                platform='aihuishou'     
+                platform='aihuishou';  
                 this.__sentry_xhr_v3__.request_headers = this.__send_headers;
             } else {
                 return

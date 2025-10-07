@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         转转/爱回收爬虫
-// @version      1.0.32
+// @version      1.0.33
 // @author       RichieMay
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/SecondHandSpider.user.js
 // @description  转转/爱回收二手商品爬取
@@ -242,7 +242,7 @@
         }
 
         self.onmessage = (e) => {
-            BackendInterfaces[e.data.method].apply(BackendInterfaces, 'args'in e.data ? e.data.args : []);
+            BackendInterfaces[e.data.method].apply(BackendInterfaces, 'args' in e.data ? e.data.args : []);
         }
     `], {type: 'application/javascript'})));
 
@@ -298,7 +298,7 @@
             if (this.__sentry_xhr_v3__.url.includes('/zzopen/ypmall/listData')) {
                 platform='zhuanzhuan';
             } else if (this.__sentry_xhr_v3__.url.includes('ahs-yanxuan-service/products/search-goods-v2')) {
-                platform='aihuishou';  
+                platform='aihuishou';
                 this.__sentry_xhr_v3__.request_headers = this.__send_headers;
             } else {
                 return

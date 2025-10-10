@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         转转/爱回收爬虫
-// @version      1.0.34
+// @version      1.0.35
 // @author       RichieMay
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/SecondHandSpider.user.js
 // @description  转转/爱回收二手商品爬取
@@ -25,6 +25,11 @@
 
             is_completed() {
                 return this.completed
+            }
+
+            request(url, options={}) {
+                this.completed = false;
+                return fetch(url, options).finally(() => this.completed = true)
             }
 
             load_more_goods() {}
@@ -54,8 +59,7 @@
                     param: JSON.stringify(this.entry.body.param)
                 });
 
-                this.completed = false;
-                return fetch(this.entry.url, {
+                return this.request(this.entry.url, {
                     method: this.entry.method,
                     headers: this.entry.request_headers,
                     body: formData,
@@ -64,29 +68,27 @@
                     id: good.infoId,
                     title: good.title,
                     metric: good.metricValue
-                }))).catch(e => null).finally( () => this.completed = true)
+                }))).catch(e => null)
             }
 
             parse_os_version(good) {
-                this.completed = false;
-                return fetch('https://app.zhuanzhuan.com/zzopen/waresshow/moreInfo?infoId=' + good.id, {
+                return this.request('https://app.zhuanzhuan.com/zzopen/waresshow/moreInfo?infoId=' + good.id, {
                     method: 'GET',
                     credentials: 'include'
                 }).then(res => res.json()).then(body => ({
                     matched: !!Array.from(body.respData.report.params).find(param => param.key === '系统版本' && /.+17.0$/.test(param.value))
                 })).catch(e => ({
                     matched: null
-                })).finally( () => this.completed = true)
+                }))
             }
 
             add_to_favorites(good) {
                 console.warn('收藏商品: https://m.zhuanzhuan.com/u/streamline_detail/new-goods-detail?infoId=' + good.id);
 
-                this.completed = false;
-                return fetch('https://app.zhuanzhuan.com/zz/transfer/addLoveInfo?infoId=' + good.id + '&metric=' + good.metric, {
+                return this.request('https://app.zhuanzhuan.com/zz/transfer/addLoveInfo?infoId=' + good.id + '&metric=' + good.metric, {
                     method: 'GET',
                     credentials: 'include'
-                }).catch(e => null).finally( () => this.completed = true)
+                }).catch(e => null)
             }
         }
 
@@ -105,8 +107,7 @@
                 this.entry.body.pageIndex += 1;
                 this.entry.request_headers["Ahs-Timestamp"] = Math.floor(Date.now() / 1000);
 
-                this.completed = false;
-                return fetch(this.entry.url, {
+                return this.request(this.entry.url, {
                     method: this.entry.method,
                     headers: this.entry.request_headers,
                     body: JSON.stringify(this.entry.body),
@@ -115,27 +116,25 @@
                     id: good.saleGoodsNo,
                     title: good.name,
                     metric: null
-                }))).catch(e => null).finally( () => this.completed = true)
+                }))).catch(e => null)
             }
 
             parse_os_version(good) {
-                this.completed = false;
-                return fetch('https://dubai.aihuishou.com/ahs-yanxuan-service/products/goods-tag-param?saleGoodsNo=' + good.id, {
+                return this.request('https://dubai.aihuishou.com/ahs-yanxuan-service/products/goods-tag-param?saleGoodsNo=' + good.id, {
                     method: 'GET',
                     credentials: 'include'
                 }).then(res => res.json()).then(body => ({
                     matched: !!Array.from(body.data.machineConditionList).find(param => param.name === '系统版本' && /17.0$/.test(param.value))
                 })).catch(e => ({
                     matched: null
-                })).finally( () => this.completed = true)
+                }))
             }
 
             add_to_favorites(good) {
                 console.warn('收藏商品: https://m.aihuishou.com/n/ofn/strict-selected/product/detail?saleGoodsNo=' + good.id);
 
-                this.completed = false;
                 this.entry.request_headers["Ahs-Timestamp"] = Math.floor(Date.now() / 1000);
-                return fetch('https://dubai.aihuishou.com/ahs-yanxuan-service/collect/save', {
+                return this.request('https://dubai.aihuishou.com/ahs-yanxuan-service/collect/save', {
                     method: 'POST',
                     headers: this.entry.request_headers,
                     body: JSON.stringify({
@@ -143,7 +142,7 @@
                         "itemNo": good.id
                     }),
                     credentials: 'include'
-                }).catch(e => null).finally( () => this.completed = true)
+                }).catch(e => null)
             }
         }
 
@@ -178,6 +177,7 @@
 
                                 this.duplicates.push(good.id);
                                 if (matched) {
+                                    self.postMessage({method: 'favorite', args: [good.id]});
                                     this.platform.add_to_favorites(good);
                                 }
                             }
@@ -260,6 +260,14 @@
                 localStorage.setItem('goods', JSON.stringify(caches));
 
                 console.debug(new Date().toLocaleString(), 'spider save ...');
+            }
+        },
+
+        favorite: (good) => {
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            if (!favorites.includes(good)) {
+                favorites.push(good);
+                localStorage.setItem('favorites', JSON.stringify(favorites));
             }
         },
 

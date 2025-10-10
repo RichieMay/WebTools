@@ -171,7 +171,7 @@
                         if (!this.duplicates.includes(good.id)) {
                             return this.platform.parse_os_version(good).then( ({matched}) => {
                                 if (matched == null) {
-                                    this.good_queues.push(good.id);
+                                    this.good_queues.push(good);
                                     return;
                                 }
 

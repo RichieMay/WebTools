@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         俄罗斯去广告
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/RemoveAd.user.js
-// @version      1.2
+// @version      1.3
 // @description  俄罗斯去广告
 // @author       RichieMay
-// @match        http*://*.pornhub.com/*
+// @match        http*://*.pornhub.*/*
 // @grant        none
 // @run-at       document-body
 // ==/UserScript==

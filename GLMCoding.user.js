@@ -325,7 +325,7 @@
 
                 new MutationObserver(function(mutations){
                     mutations.forEach(function(mutation) {
-                        if (!wantedBuyPlan.continue) {
+                        if (!wantedBuyPlan.continued) {
                             return;
                         }
 

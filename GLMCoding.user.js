@@ -185,6 +185,8 @@
     // 点击验证码坐标
     async function clickAtCaptcha(elementNode, jsonObject) {
        try {
+           console.log('[购买助手] 🚀 点击验证码...', jsonObject);
+
            if (Object.keys(jsonObject).length !== 3) {
                throw null;
            }

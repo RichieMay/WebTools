@@ -5,7 +5,7 @@
 // @description  智谱 GLM Coding 自动购买工具
 // @author       RichieMay
 // @match        https://bigmodel.cn/glm-coding*
-// @match        https://www.bigmodel.cn/glm-coding
+// @match        https://www.bigmodel.cn/glm-coding*
 // @icon         https://bigmodel.cn/img/icons/favicon-32x32.png
 // @grant        GM_xmlhttpRequest
 // @run-at       document-start

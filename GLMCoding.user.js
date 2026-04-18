@@ -191,7 +191,6 @@
 
            const rect = elementNode.target.getBoundingClientRect();
            for (const word of elementNode.text.split(' ')) {
-               if (word == '') { continue; }
                const coords = jsonObject[word];
                const clientX = rect.left + coords[0];
                const clientY = rect.top + coords[1];
@@ -286,7 +285,7 @@
             },
             'aria-label': (elementNode, captchaObject) => {
                  if (elementNode.textContent?.includes('请依次点击')) {
-                    captchaObject.text = elementNode.textContent.split('：')?.[1];
+                    captchaObject.text = elementNode.textContent.trim().split('：')?.[1];
                  }
             }
         }

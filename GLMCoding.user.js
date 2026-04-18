@@ -216,7 +216,11 @@
     function refreshCaptcha() {
         console.log('[购买助手] 🚀 刷新验证码...');
 
-        document.querySelector('.tencent-captcha-dy__footer-icon--refresh')?.click()
+        //验证码弹窗未关闭
+        const opacity = parseInt(getComputedStyle(document.querySelector('#tcaptcha_transform_dy'))?.opacity);
+        if (opacity === 1) {
+            document.querySelector('.tencent-captcha-dy__footer-icon--refresh')?.click()
+        }
     }
 
     // 识别验证码

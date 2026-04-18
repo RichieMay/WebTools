@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         智谱 GLM Coding 购买助手
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/GLMCoding.user.js
-// @version      0.0.3
+// @version      1.0.4
 // @description  智谱 GLM Coding 自动购买工具
 // @author       RichieMay
 // @match        https://bigmodel.cn/glm-coding*
@@ -328,11 +328,10 @@
                 });
             }
 
-            console.log('[购买助手] 🚀 网络拦截器已在页面加载成功...');
+            console.log('[购买助手] 🚀 已在页面加载成功...');
         } catch (e) {
-            console.log('[购买助手] 🚀 网络拦截器已在页面加载失败...');
-            alert('插件加载失败,请刷新页面！')
+            console.log('[购买助手] 🚀 已在页面加载失败...');
+            alert('请注意：插件加载失败，请刷新页面！')
         }
     }, 3000)
-
 })();

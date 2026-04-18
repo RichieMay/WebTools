@@ -329,8 +329,8 @@
                             return;
                         }
 
-                        wantedBuyPlan.continued = false;
                         if (!wantedBuyPlan.button.disabled) {
+                            wantedBuyPlan.continued = false;
                             wantedBuyPlan.button.click();
                         }
                     })

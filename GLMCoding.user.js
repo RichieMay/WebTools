@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         智谱 GLM Coding 购买助手
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/GLMCoding.user.js
-// @version      1.0.7
+// @version      1.0.8
 // @description  智谱 GLM Coding 自动购买工具
 // @author       RichieMay
 // @match        https://bigmodel.cn/glm-coding*
@@ -184,7 +184,7 @@
     // 点击验证码坐标
     async function clickAtCaptcha(elementNode, jsonObject) {
        try {
-           console.log('[购买助手] 🚀 点击验证码', jsonObject);
+           console.log('[购买助手] 🚀 点击验证码', JSON.stringify(jsonObject));
 
            const rect = elementNode.target.getBoundingClientRect();
            for (const word of elementNode.text.split(' ')) {
@@ -315,7 +315,7 @@
 
             for (const card of cards) {
                 const button = card.querySelector('.buy-btn');
-                const title = (card.querySelector('.package-card-title .font-prompt')?.textContent || '').trim();
+                const title = card.querySelector('.package-card-title .font-prompt')?.textContent?.trim();
                 button?.addEventListener('click', function(e) {
                     wantedBuyPlan.plan = title;
                     wantedBuyPlan.button = button;

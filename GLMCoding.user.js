@@ -187,10 +187,6 @@
        try {
            console.log('[购买助手] 🚀 点击验证码...', jsonObject);
 
-           if (Object.keys(jsonObject).length !== 3) {
-               throw null;
-           }
-
            const rect = elementNode.target.getBoundingClientRect();
            for (const word of elementNode.text.split(' ')) {
                const coords = jsonObject[word];
@@ -198,7 +194,7 @@
                const clientY = rect.top + coords[1];
                elementNode.target.dispatchEvent(new MouseEvent('click', {clientX, clientY, bubbles: true}));
 
-               await sleep(200);
+               await sleep(100);
            };
 
            confirmCaptcha();

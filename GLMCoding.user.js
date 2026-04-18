@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         智谱 GLM Coding 购买助手
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/GLMCoding.user.js
-// @version      1.0.5
+// @version      1.0.6
 // @description  智谱 GLM Coding 自动购买工具
 // @author       RichieMay
 // @match        https://bigmodel.cn/glm-coding*
@@ -24,9 +24,10 @@
             document.querySelector('.white-mask-bg .el-dialog__headerbtn')?.click();
             setTimeout(() => {
                 console.log(`[购买助手] 🚀 自动继续购买套餐: ${wantedBuyPlan.plan}`);
+
                 wantedBuyPlan.idle = 1;
                 wantedBuyPlan.button.click();
-            }, 200);
+            }, 300);
         }
     }
 

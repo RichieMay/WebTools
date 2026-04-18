@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         智谱 GLM Coding 购买助手
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/GLMCoding.user.js
-// @version      1.0.6
+// @version      1.0.7
 // @description  智谱 GLM Coding 自动购买工具
 // @author       RichieMay
 // @match        https://bigmodel.cn/glm-coding*
@@ -17,18 +17,16 @@
     // ==========================================
     // 关闭无效的支付弹窗并继续购买
     // ==========================================
-    let wantedBuyPlan = {button: null, plan: null, idle: -1};
+    let wantedBuyPlan = {button: null, plan: null, continued: false};
     function continueToBuy() {
-        if (wantedBuyPlan?.idle > 0) {
-            wantedBuyPlan.idle = 0;
-            document.querySelector('.white-mask-bg .el-dialog__headerbtn')?.click();
-            setTimeout(() => {
-                console.log(`[购买助手] 🚀 自动继续购买套餐: ${wantedBuyPlan.plan}`);
+        console.log(`[购买助手] 🚀 自动继续购买套餐: ${wantedBuyPlan.plan}`);
 
-                wantedBuyPlan.idle = 1;
+        document.querySelector('.white-mask-bg .el-dialog__headerbtn')?.click();
+        wantedBuyPlan.continued = true; setTimeout(() => {
+            if (!wantedBuyPlan.button.disabled) {
                 wantedBuyPlan.button.click();
-            }, 300);
-        }
+            }
+        }, 200);
     }
 
     // ==========================================
@@ -186,7 +184,7 @@
     // 点击验证码坐标
     async function clickAtCaptcha(elementNode, jsonObject) {
        try {
-           console.log('[购买助手] 🚀 点击验证码...', jsonObject);
+           console.log('[购买助手] 🚀 点击验证码', jsonObject);
 
            const rect = elementNode.target.getBoundingClientRect();
            for (const word of elementNode.text.split(' ')) {
@@ -206,14 +204,14 @@
 
     // 提交确认验证码
     function confirmCaptcha() {
-        console.log('[购买助手] 🚀 提交验证码...');
+        console.log('[购买助手] 🚀 提交验证码');
 
         document.querySelector('.tencent-captcha-dy__verify-confirm-btn')?.click()
     }
 
     // 刷新验证码
     function refreshCaptcha() {
-        console.log('[购买助手] 🚀 刷新验证码...');
+        console.log('[购买助手] 🚀 刷新验证码');
 
         //验证码弹窗未关闭
         const opacity = parseInt(getComputedStyle(document.querySelector('#tcaptcha_transform_dy'))?.opacity);
@@ -224,7 +222,7 @@
 
     // 识别验证码
     function request_captcha_service(captchaObject) {
-        console.log('[购买助手] 🚀 识别验证码...');
+        console.log('[购买助手] 🚀 识别验证码');
 
         captchaObject.done = false; GM_xmlhttpRequest({
             method: "POST",
@@ -317,19 +315,31 @@
 
             for (const card of cards) {
                 const button = card.querySelector('.buy-btn');
-                const title = (card.querySelector('.package-card-title .font-prompt')?.textContent || '').trim()
+                const title = (card.querySelector('.package-card-title .font-prompt')?.textContent || '').trim();
                 button?.addEventListener('click', function(e) {
-                    wantedBuyPlan.idle = 1;
                     wantedBuyPlan.plan = title;
                     wantedBuyPlan.button = button;
 
                     console.log(`[购买助手] 🚀 正在购买套餐: ${wantedBuyPlan.plan}`);
                 });
+
+                new MutationObserver(function(mutations){
+                    mutations.forEach(function(mutation) {
+                        if (!wantedBuyPlan.continue) {
+                            return;
+                        }
+
+                        wantedBuyPlan.continued = false;
+                        if (!wantedBuyPlan.button.disabled) {
+                            wantedBuyPlan.button.click();
+                        }
+                    })
+                }).observe(button, {attributes: true, attributeFilter:['disabled']})
             }
 
-            console.log('[购买助手] 🚀 已在页面加载成功...');
+            console.log('[购买助手] 🚀 已在页面加载成功');
         } catch (e) {
-            console.log('[购买助手] 🚀 已在页面加载失败...');
+            console.log('[购买助手] 🚀 已在页面加载失败');
             alert('请注意：插件加载失败，请刷新页面！')
         }
     }, 3000)

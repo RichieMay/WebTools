@@ -1,11 +1,10 @@
 // ==UserScript==
 // @name         智谱 GLM Coding 购买助手
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/GLMCoding.user.js
-// @version      1.0.9
+// @version      1.0.10
 // @description  智谱 GLM Coding 自动购买工具
 // @author       RichieMay
 // @match        https://*.bigmodel.cn/glm-coding*
-// @match        https://www.bigmodel.cn/glm-coding*
 // @icon         https://bigmodel.cn/img/icons/favicon-32x32.png
 // @grant        GM_xmlhttpRequest
 // @run-at       document-start
@@ -85,8 +84,8 @@
                     // 构造并返回一份假的响应给 Vue
                     return new Response(text, {
                         status: response.status,
-                        statusText: response.statusText,
-                        headers: response.headers
+                        headers: response.headers,
+                        statusText: response.statusText
                     });
                 }
             } catch (e) {}
@@ -112,6 +111,7 @@
             }
 
             try {
+                //检查验证码是否正确
                 if (this._reqUrl.includes('/cap_union_new_verify')) {
                     try {
                         const error = parseInt(originalJSONParse(this.responseText)?.errorCode);
@@ -123,45 +123,27 @@
                     return;
                 }
 
-                if (this._reqUrl.includes('/pay/check')) {
-                    if (originalJSONParse(this.responseText).data?.toUpperCase() === "EXPIRE") {
-                        console.log('[购买助手] 🚀 拦截到 XHR 服务器确认无效，正在重新购买！', this._reqUrl);
-
-                        continueToBuy();
-                    } else {
-                        console.log('[购买助手] 🚀 拦截到 XHR 服务器确认似乎有效，请尽快确认支付！', this._reqUrl);
-                    }
-
-                    return;
-                }
-
+                //检查订单状态
                 if (this._reqUrl.includes('/pay/preview')) {
                     let respJson = originalJSONParse(this.responseText);
-                    // 用劫持 getter 的方式修改 this.responseText 给框架层消化
+                    const jsonData = respJson?.data;
+                    if (jsonData?.bizId) {
+                        console.log(`[购买助手] 🚀 拦截到 XHR 购买成功(bizId=${jsonData.bizId}), 请尽快支付！`, this._reqUrl);
+                        return;
+                    }
+
+                    // 用劫持 getter 的方式修改 this.responseText
                     Object.defineProperty(this, 'response', { get: function() { return respJson; } });
                     Object.defineProperty(this, 'responseText', { get: function() { return JSON.stringify(respJson); } });
 
-                    let jsonData = respJson.data;
-                    if (jsonData.soldOut || jsonData.disabled || jsonData.isSoldOut) {
-                        console.log('[购买助手] 🚀 拦截到 XHR 售罄数据，正在执行篡改！', this._reqUrl);
+                    // 直接返回系统繁忙,避免发起bizId=null的check请求
+                    respJson.code = 555;
+                    respJson.data = null;
+                    respJson.msg = '系统繁忙,请稍后再试';
 
-                        jsonData.soldOut !== undefined && (jsonData.soldOut = false);
-                        jsonData.disabled !== undefined && (jsonData.disabled = false);
-                        jsonData.isSoldOut !== undefined && (jsonData.isSoldOut = false);
-                    }
+                    console.log('[购买助手] 🚀 拦截到 XHR 购买失败，正在重新购买！', this._reqUrl);
 
-                    if (!jsonData.bizId) {
-                        console.log('[购买助手] 🚀 拦截到 XHR 购买失败，正在重新购买！', this._reqUrl);
-
-                        // 直接返回系统繁忙,避免发起bizId=null的check请求
-                        respJson.code = 555;
-                        respJson.data = null;
-                        respJson.msg = '系统繁忙,请稍后再试';
-
-                        continueToBuy();
-                    } else {
-                        console.log(`[购买助手] 🚀 拦截到 XHR 购买有效(bizId=${jsonData.bizId})，正在向服务器确认！`, this._reqUrl);
-                    }
+                    continueToBuy();
                 }
             } catch (e) {
                 console.log('[购买助手] 🚀 拦截到 XHR 购买异常，正在重新购买！', this._reqUrl);
@@ -182,36 +164,42 @@
     }
 
     // 点击验证码坐标
-    async function clickAtCaptcha(elementNode, jsonObject) {
+    async function processCaptcha(captchaObject, jsonObject) {
        try {
            console.log('[购买助手] 🚀 点击验证码', JSON.stringify(jsonObject));
 
-           const rect = elementNode.target.getBoundingClientRect();
-           for (const word of elementNode.text.split(' ')) {
+           const rect = captchaObject.target.getBoundingClientRect();
+           for (const word of captchaObject.text.split(' ')) {
                const coords = jsonObject[word];
                const clientX = rect.left + coords[0];
                const clientY = rect.top + coords[1];
-               elementNode.target.dispatchEvent(new MouseEvent('click', {clientX, clientY, bubbles: true}));
+               captchaObject.target.dispatchEvent(new MouseEvent('click', {clientX, clientY, bubbles: true}));
 
                await sleep(100);
            };
 
-           confirmCaptcha();
+           confirmCaptcha(captchaObject);
        } catch(e) {
-           refreshCaptcha();
+           refreshCaptcha(captchaObject);
        }
     }
 
     // 提交确认验证码
-    function confirmCaptcha() {
+    function confirmCaptcha(captchaObject) {
         console.log('[购买助手] 🚀 提交验证码');
+
+        captchaObject.done = true;
+        captchaObject.image = captchaObject.text = null;
 
         document.querySelector('.tencent-captcha-dy__verify-confirm-btn')?.click()
     }
 
     // 刷新验证码
-    function refreshCaptcha() {
+    function refreshCaptcha(captchaObject) {
         console.log('[购买助手] 🚀 刷新验证码');
+
+        captchaObject.done = true;
+        captchaObject.image = captchaObject.text = null;
 
         //验证码弹窗未关闭
         const opacity = parseInt(getComputedStyle(document.querySelector('#tcaptcha_transform_dy'))?.opacity);
@@ -226,32 +214,22 @@
 
         captchaObject.done = false; GM_xmlhttpRequest({
             method: "POST",
-            url: "http://127.0.0.1:8000/extract",
+            url: "http://172.24.4.200:8000/extract",
             headers: {
                 "Content-Type": "application/json"
             },
             data: JSON.stringify(captchaObject),
             onload: function (res) {
-                clickAtCaptcha(captchaObject, originalJSONParse(res.responseText));
+                processCaptcha(captchaObject, originalJSONParse(res.responseText));
             },
             onabort: function(err) {
-                captchaObject.done = true;
-                captchaObject.image = captchaObject.text = null;
-                refreshCaptcha();
+                refreshCaptcha(captchaObject);
             },
             onerror: function(err) {
-                captchaObject.done = true;
-                captchaObject.image = captchaObject.text = null;
-                refreshCaptcha();
+                refreshCaptcha(captchaObject);
             },
             ontimeout: function(err) {
-                captchaObject.done = true;
-                captchaObject.image = captchaObject.text = null;
-                refreshCaptcha();
-            },
-            onloadend: function(err) {
-                captchaObject.done = true;
-                captchaObject.image = captchaObject.text = null;
+                refreshCaptcha(captchaObject);
             }
         });
     }
@@ -261,7 +239,6 @@
     // 通过记录用户最新点击的套餐对应按钮事件
     // ==========================================
     function watch_captcha_warp() {
-        let captcha = { image: null, text: null, width: 0, height: 0, done: true, target: null };
         const mapper = {
             'style': (elementNode, captchaObject) => {
                 const style = getComputedStyle(elementNode);
@@ -285,6 +262,7 @@
             }
         }
 
+        let captcha = { image: null, text: null, width: 0, height: 0, done: true, target: null };
         new MutationObserver(function(mutations){
             mutations.forEach(function(mutation) {
                 if (!captcha.done) {

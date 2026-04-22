@@ -216,7 +216,7 @@
 
         captchaObject.done = false; GM_xmlhttpRequest({
             method: "POST",
-            url: "http://172.24.4.200:8000/extract",
+            url: "http://127.0.0.1:8000/extract",
             headers: {
                 "Content-Type": "application/json"
             },

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         智谱 GLM Coding 购买助手
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/GLMCoding.user.js
-// @version      1.0.14
+// @version      1.0.15
 // @description  智谱 GLM Coding 自动购买工具
 // @author       RichieMay
 // @match        https://*.bigmodel.cn/glm-coding*
@@ -253,8 +253,8 @@
                 if (imageUrl !== captchaObject.image) {
                     captchaObject.target = elementNode;
                     captchaObject.image = imageUrl;
-                    captchaObject.width = Math.round(style.width);
-                    captchaObject.height = Math.round(style.height);
+                    captchaObject.width = Math.round(parseFloat(style.width));
+                    captchaObject.height = Math.round(parseFloat(style.height));
                 }
             },
             'aria-label': (elementNode, captchaObject) => {

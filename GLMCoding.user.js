@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         智谱 GLM Coding 购买助手
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/GLMCoding.user.js
-// @version      1.0.11
+// @version      1.0.12
 // @description  智谱 GLM Coding 自动购买工具
 // @author       RichieMay
 // @match        https://*.bigmodel.cn/glm-coding*
 // @icon         https://bigmodel.cn/img/icons/favicon-32x32.png
 // @grant        GM_xmlhttpRequest
-// @run-at       document-start
+// @run-at       document-end
 // ==/UserScript==
 
 (function() {
@@ -185,7 +185,7 @@
     }
 
     // 提交确认验证码
-    function confirmCaptcha(captchaObject = null) {
+    function confirmCaptcha(captchaObject) {
         console.log('[购买助手] 🚀 提交验证码');
 
         captchaObject.done = true;
@@ -195,7 +195,7 @@
     }
 
     // 刷新验证码
-    function refreshCaptcha(captchaObject) {
+    function refreshCaptcha(captchaObject = null) {
         console.log('[购买助手] 🚀 刷新验证码');
 
         if (captchaObject) {
@@ -240,7 +240,7 @@
     // 监控验证码弹窗
     // 通过记录用户最新点击的套餐对应按钮事件
     // ==========================================
-    function watch_captcha_warp() {
+    function watch_captcha_area(captchaNode) {
         const mapper = {
             'style': (elementNode, captchaObject) => {
                 const style = getComputedStyle(elementNode);
@@ -265,8 +265,8 @@
         }
 
         let captcha = { image: null, text: null, width: 0, height: 0, done: true, target: null };
-        new MutationObserver(function(mutations){
-            mutations.forEach(function(mutation) {
+        new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
                 if (!captcha.done) {
                     return;
                 }
@@ -275,52 +275,65 @@
                 if (captcha.image && captcha.text) {
                     request_captcha_service(captcha);
                 }
-            });
-        }).observe(document.querySelector('.tencent-captcha-dy__warp'), {subtree: true, attributes: true, attributeFilter:['style', 'aria-label']});
+            }
+        }).observe(captchaNode, {subtree: true, attributes: true, attributeFilter:['style', 'aria-label']});
     }
 
     // ==========================================
     // 获取用户当前购买的套餐
     // 通过记录用户最新点击的套餐对应按钮事件
     // ==========================================
-    setTimeout(() => {
-        try {
-            //监控验证码窗口
-            watch_captcha_warp();
+    function watch_card_box_area(cardBoxNodes) {
+        cardBoxNodes.forEach((card) => {
+            const button = card.querySelector('.buy-btn');
+            const title = card.querySelector('.package-card-title .font-prompt')?.textContent?.trim();
 
-            const cards = document.querySelectorAll('.glm-coding-package-list .package-card-box');
-            if (!cards?.length) {
-                throw null;
+            button?.addEventListener('click', function(e) {
+                wantedBuyPlan.plan = title;
+                wantedBuyPlan.button = button;
+
+                console.log(`[购买助手] 🚀 正在购买套餐: ${wantedBuyPlan.plan}`);
+            });
+
+            new MutationObserver((mutations) => {
+                for (const mutation of mutations) {
+                    if (!wantedBuyPlan.continued) {
+                        return;
+                    }
+
+                    if (!wantedBuyPlan.button.disabled) {
+                        wantedBuyPlan.continued = false;
+                        wantedBuyPlan.button.click();
+                    }
+                }
+            }).observe(button, {attributes: true, attributeFilter:['disabled']});
+        });
+    }
+
+    // ==========================================
+    // 加载主流程逻辑
+    // 通过监控购买套餐及验证码节点加载主流程逻辑
+    // ==========================================
+    new MutationObserver((mutations, observer) => {
+        for (const mutation of mutations) {
+            const captchaNode = mutation.target?.querySelector('#tcaptcha_transform_dy');
+            if (!captchaNode) {
+                continue;
             }
 
-            for (const card of cards) {
-                const button = card.querySelector('.buy-btn');
-                const title = card.querySelector('.package-card-title .font-prompt')?.textContent?.trim();
-                button?.addEventListener('click', function(e) {
-                    wantedBuyPlan.plan = title;
-                    wantedBuyPlan.button = button;
-
-                    console.log(`[购买助手] 🚀 正在购买套餐: ${wantedBuyPlan.plan}`);
-                });
-
-                new MutationObserver(function(mutations){
-                    mutations.forEach(function(mutation) {
-                        if (!wantedBuyPlan.continued) {
-                            return;
-                        }
-
-                        if (!wantedBuyPlan.button.disabled) {
-                            wantedBuyPlan.continued = false;
-                            wantedBuyPlan.button.click();
-                        }
-                    })
-                }).observe(button, {attributes: true, attributeFilter:['disabled']})
+            const cardBoxNodes = mutation.target?.querySelectorAll('.glm-coding-package-list .package-card-box');
+            if (!cardBoxNodes?.length) {
+                continue;
             }
+
+            watch_captcha_area(captchaNode);
+            watch_card_box_area(cardBoxNodes);
+
+            observer.takeRecords();
+            observer.disconnect();
 
             console.log('[购买助手] 🚀 已在页面加载成功');
-        } catch (e) {
-            console.log('[购买助手] 🚀 已在页面加载失败');
-            alert('请注意：插件加载失败，请刷新页面！')
+            return;
         }
-    }, 3000)
+    }).observe(document.body, {childList : true, subtree: true});
 })();

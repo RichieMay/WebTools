@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         智谱 GLM Coding 购买助手
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/GLMCoding.user.js
-// @version      1.0.10
+// @version      1.0.11
 // @description  智谱 GLM Coding 自动购买工具
 // @author       RichieMay
 // @match        https://*.bigmodel.cn/glm-coding*
@@ -185,7 +185,7 @@
     }
 
     // 提交确认验证码
-    function confirmCaptcha(captchaObject) {
+    function confirmCaptcha(captchaObject = null) {
         console.log('[购买助手] 🚀 提交验证码');
 
         captchaObject.done = true;
@@ -198,8 +198,10 @@
     function refreshCaptcha(captchaObject) {
         console.log('[购买助手] 🚀 刷新验证码');
 
-        captchaObject.done = true;
-        captchaObject.image = captchaObject.text = null;
+        if (captchaObject) {
+            captchaObject.done = true;
+            captchaObject.image = captchaObject.text = null;
+        }
 
         //验证码弹窗未关闭
         const opacity = parseInt(getComputedStyle(document.querySelector('#tcaptcha_transform_dy'))?.opacity);

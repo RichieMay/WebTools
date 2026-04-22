@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         智谱 GLM Coding 购买助手
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/GLMCoding.user.js
-// @version      1.0.12
+// @version      1.0.13
 // @description  智谱 GLM Coding 自动购买工具
 // @author       RichieMay
 // @match        https://*.bigmodel.cn/glm-coding*
@@ -253,12 +253,12 @@
                 if (imageUrl !== captchaObject.image) {
                     captchaObject.target = elementNode;
                     captchaObject.image = imageUrl;
-                    captchaObject.width = parseInt(style.width);
-                    captchaObject.height = parseInt(style.height);
+                    captchaObject.width = Math.round(style.width);
+                    captchaObject.height = Math.round(style.height);
                 }
             },
             'aria-label': (elementNode, captchaObject) => {
-                 if (elementNode.textContent?.includes('请依次点击')) {
+                 if (elementNode.textContent?.startsWith('请依次点击')) {
                     captchaObject.text = elementNode.textContent.trim().split('：')?.[1];
                  }
             }

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         智谱 GLM Coding 购买助手
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/GLMCoding.user.js
-// @version      1.0.16
+// @version      1.0.17
 // @description  智谱 GLM Coding 自动购买工具
 // @author       RichieMay
 // @match        https://*.bigmodel.cn/glm-coding*
@@ -12,6 +12,16 @@
 
 (function() {
     'use strict';
+
+    // ==========================================
+    // 重定向到推广链接: https://bigmodel.cn/glm-coding?ic=DVXGFYTBNN
+    // ==========================================
+    function redirect_promotion() {
+        if (!window.location.search.includes('DVXGFYTBNN')) {
+            window.location.href = '/glm-coding?ic=DVXGFYTBNN';
+        }
+    }
+    redirect_promotion();
 
     // ==========================================
     // 关闭无效的支付弹窗并继续购买

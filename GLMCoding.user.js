@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         智谱 GLM Coding 购买助手
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/GLMCoding.user.js
-// @version      1.0.15
+// @version      1.0.16
 // @description  智谱 GLM Coding 自动购买工具
 // @author       RichieMay
 // @match        https://*.bigmodel.cn/glm-coding*
@@ -128,7 +128,7 @@
                     let respJson = originalJSONParse(this.responseText);
                     const jsonData = respJson?.data;
                     if (jsonData?.bizId) {
-                        console.log(`[购买助手] 🚀 拦截到 XHR 购买成功(bizId=${jsonData.bizId}), 请尽快支付！`, this._reqUrl);
+                        console.log(`[购买助手] 🚀 拦截到 XHR 购买成功(bizId=${jsonData.bizId}), 请尽快支付！`);
                         return;
                     }
 
@@ -141,12 +141,12 @@
                     respJson.data = null;
                     respJson.msg = '系统繁忙,请稍后再试';
 
-                    console.log('[购买助手] 🚀 拦截到 XHR 购买失败，正在重新购买！', this._reqUrl);
+                    console.log('[购买助手] 🚀 拦截到 XHR 购买失败，正在重新购买！');
 
                     continueToBuy();
                 }
             } catch (e) {
-                console.log('[购买助手] 🚀 拦截到 XHR 购买异常，正在重新购买！', this._reqUrl);
+                console.log('[购买助手] 🚀 拦截到 XHR 购买异常，正在重新购买！');
 
                 continueToBuy();
             }

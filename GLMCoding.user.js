@@ -286,7 +286,7 @@
                     request_captcha_service(captcha);
                 }
             }
-        }).observe(captchaNode, {subtree: true, attributes: true, attributeFilter:['style', 'aria-label']});
+        }).observe(captchaNode, {subtree: true, attributes: true, attributeFilter: ['style', 'aria-label']});
     }
 
     // ==========================================
@@ -316,7 +316,7 @@
                         wantedBuyPlan.button.click();
                     }
                 }
-            }).observe(button, {attributes: true, attributeFilter:['disabled']});
+            }).observe(button, {attributes: true, attributeFilter: ['disabled']});
         });
     }
 
@@ -345,5 +345,5 @@
             console.log('[购买助手] 🚀 已在页面加载成功');
             return;
         }
-    }).observe(document.body, {childList : true, subtree: true});
+    }).observe(document.body, {childList: true, subtree: true});
 })();

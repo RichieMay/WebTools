@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         智谱 GLM Coding 购买助手
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/GLMCoding.user.js
-// @version      1.0.17
+// @version      1.0.18
 // @description  智谱 GLM Coding 自动购买工具
 // @author       RichieMay
 // @match        https://*.bigmodel.cn/glm-coding*
@@ -298,7 +298,7 @@
             const button = card.querySelector('.buy-btn');
             const title = card.querySelector('.package-card-title .font-prompt')?.textContent?.trim();
 
-            button?.addEventListener('click', function(e) {
+            button.addEventListener('click', function(e) {
                 wantedBuyPlan.plan = title;
                 wantedBuyPlan.button = button;
 

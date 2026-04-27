@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         智谱 GLM Coding 购买助手
 // @namespace    https://github.com/RichieMay/WebTools/raw/master/GLMCoding.user.js
-// @version      1.0.18
+// @version      1.0.19
 // @description  智谱 GLM Coding 自动购买工具
 // @author       RichieMay
 // @match        https://*.bigmodel.cn/glm-coding*
@@ -293,9 +293,9 @@
     // 获取用户当前购买的套餐
     // 通过记录用户最新点击的套餐对应按钮事件
     // ==========================================
-    function watch_card_box_area(cardBoxNodes) {
-        cardBoxNodes.forEach((card) => {
-            const button = card.querySelector('.buy-btn');
+    function watch_card_box_area(cardNodes) {
+        cardNodes.forEach((card) => {
+            const button = card.querySelector('.package-card-btn-box .buy-btn');
             const title = card.querySelector('.package-card-title .font-prompt')?.textContent?.trim();
 
             button.addEventListener('click', function(e) {
@@ -331,13 +331,13 @@
                 continue;
             }
 
-            const cardBoxNodes = mutation.target?.querySelectorAll('.glm-coding-package-list .package-card-box');
-            if (!cardBoxNodes?.length) {
+            const cardNodes = mutation.target?.querySelectorAll('.glm-coding-package-list .package-card');
+            if (!cardNodes?.length) {
                 continue;
             }
 
+            watch_card_box_area(cardNodes);
             watch_captcha_area(captchaNode);
-            watch_card_box_area(cardBoxNodes);
 
             observer.takeRecords();
             observer.disconnect();
